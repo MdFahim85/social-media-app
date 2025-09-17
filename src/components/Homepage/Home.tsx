@@ -3,8 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import Postbox from "./Post/Postbox";
 import API from "@/app/api/axios";
-import PostCard from "./Post/PostCard";
+import PostCard from "@/components/Homepage/Post/PostCard";
 import { PostWithAllRelations } from "../../../types/postType";
+import Loading from "./LoadingSkeleton";
 
 const getPosts = async () => {
   try {
@@ -20,6 +21,10 @@ function Home() {
     queryKey: ["fetchPosts"],
     queryFn: getPosts,
   });
+
+  if (isPending) {
+    return <Loading />;
+  }
 
   return (
     <div>

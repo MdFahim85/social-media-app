@@ -11,4 +11,9 @@ const postQuery = {
   },
 };
 
+export type LIKE = {
+  authorId: String | undefined; //user.id = authorId
+  postId: String;
+};
+
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
