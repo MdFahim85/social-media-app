@@ -6,7 +6,10 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
-    return NextResponse.json({ message: "Sign in to perform this action" });
+    return NextResponse.json({
+      message: "Sign in to perform this action",
+      status: 401,
+    });
   }
   const userId = token.sub;
   const { authorId, postId } = body;
@@ -53,7 +56,7 @@ export async function POST(req: NextRequest) {
         postId,
       },
     }),
-    ...(post.authorId === userId
+    ...(post.authorId !== userId
       ? [
           prisma.notification.create({
             data: {

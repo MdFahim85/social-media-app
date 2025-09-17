@@ -7,7 +7,7 @@ import { ImageIcon, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import API from "@/app/api/axios";
 import ImageBox from "@/components/ImageBox";
 
@@ -28,10 +28,12 @@ async function addPost(post: POST) {
 function Postbox() {
   const { data: session } = useSession();
   const user = session?.user;
+  const queryClient = useQueryClient();
 
   const { mutate, isPending: isPosting } = useMutation({
     mutationFn: (content: string) => addPost({ authorId: user?.id, content }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       toast.success("New post added");
       setContent("");
     },
@@ -54,15 +56,12 @@ function Postbox() {
     mutate(content);
   };
 
-  if (!session) {
-    return null;
-  }
   if (!user) {
     return null;
   }
 
   return (
-    <Card className="w-full ">
+    <Card className="w-full mb-4">
       <CardTitle>
         <h1 className="text-lg text-center">Create a post</h1>
       </CardTitle>
