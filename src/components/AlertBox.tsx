@@ -30,11 +30,11 @@ function AlertBox({ onClick }: { onClick: React.MouseEventHandler }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border border-slate-500  text-slate-500 hover:text-white hover:bg-slate-500">
+            <AlertDialogCancel className="border border-slate-500 dark:bg-slate-950 bg-white  text-slate-500 hover:text-white hover:bg-slate-500 hover:dark:bg-slate-500">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="border border-red-500  text-red-500 hover:text-white hover:bg-red-500"
+              className="border border-red-500 dark:bg-slate-950 bg-white  text-red-500 hover:text-white hover:dark:bg-red-500 hover:bg-red-500"
               onClick={(e) => onClick(e)}
             >
               Delete

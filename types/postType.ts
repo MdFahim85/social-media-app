@@ -16,4 +16,9 @@ export type LIKE = {
   postId: String;
 };
 
+export type COMMENT = {
+  postId: String;
+  content: String;
+};
+
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
