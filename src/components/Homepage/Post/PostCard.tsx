@@ -1,12 +1,8 @@
 "use client";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import {
-  COMMENT,
-  LIKE,
-  PostWithAllRelations,
-} from "../../../../types/postType";
+import { PostWithAllRelations } from "../../../../types/postType";
 import ImageBox from "@/components/ImageBox";
-import { Heart, ImageIcon, MessageCircle, Send, Trash } from "lucide-react";
+import { Heart, MessageCircle, Send, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
@@ -14,46 +10,19 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import API from "@/app/api/axios";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
-import Loading from "../LoadingSkeleton";
-import AlertBtn from "@/components/AlertBox";
 import AlertBox from "@/components/AlertBox";
 import { Textarea } from "@/components/ui/textarea";
-import { Asap } from "next/font/google";
+import {
+  addComment,
+  deleteComment,
+  deletePost,
+  likeUnlike,
+} from "@/lib/api/userApi";
 
 type PostCardProps = { post: PostWithAllRelations };
-
-async function likeUnlike(like: LIKE) {
-  const res = await API.post("/posts/likes", like);
-  if (res.data.status == 401 || res.data.status == 404) {
-    const error = res.data;
-    throw new Error(error.message);
-  }
-  return res;
-}
-
-async function deletePost(id: any) {
-  const res = await API.delete("/posts", { data: { id } });
-  console.log(res);
-  if (res.data.status == 401 || res.data.status == 404) {
-    const error = res.data;
-    throw new Error(error.message);
-  }
-  return res;
-}
-
-async function addComment(comment: COMMENT) {
-  const res = await API.post("/posts/comments", comment);
-  console.log(res);
-  if (res.data.status == 401 || res.data.status == 404) {
-    const error = res.data;
-    throw new Error(error.message);
-  }
-  return res;
-}
 
 function PostCard({ post }: PostCardProps) {
   const postedDate = formatDistanceToNow(new Date(post.createdAt));
@@ -67,12 +36,17 @@ function PostCard({ post }: PostCardProps) {
   const [totalLikes, setTotalLikes] = useState(post._count.likes);
 
   const [content, setContent] = useState("");
+  const [showComment, setShowComment] = useState(false);
+  const [commented, setCommented] = useState(
+    post.comments.some((comment) => comment.authorId === user?.id)
+  );
 
   const { mutate: commentAdd, isPending: isCommenting } = useMutation({
     mutationFn: (content: string) => addComment({ content, postId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       toast.success("Comment added");
+      setCommented((prev) => !prev);
       setContent("");
     },
     onError: () => {
@@ -91,10 +65,22 @@ function PostCard({ post }: PostCardProps) {
     },
   });
 
-  const { mutate: deletedPost, isPending: isDeleting } = useMutation({
+  const { mutate: deletedPost } = useMutation({
     mutationFn: (postId: string) => deletePost(postId),
     onSuccess: () => {
       toast.success("Post deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const { mutate: deletedComment, isPending: isDeletingComment } = useMutation({
+    mutationFn: (id: string) => deleteComment(id),
+    onSuccess: () => {
+      setCommented((prev) => !prev);
+      toast.success("Comment deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
     },
     onError: (error) => {
@@ -106,12 +92,16 @@ function PostCard({ post }: PostCardProps) {
     mutate(post.id);
   }
 
-  function handleDelete() {
+  function handlePostDelete() {
     deletedPost(post.id);
   }
 
   function handleComment() {
     commentAdd(content);
+  }
+
+  function handleCommentDelete(id: string) {
+    deletedComment(id);
   }
 
   return (
@@ -128,71 +118,121 @@ function PostCard({ post }: PostCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm text-gray-500">{postedDate} ago </p>
-              {user?.id === post.authorId &&
-                (isDeleting ? <AlertBox onClick={handleDelete} /> : "")}
+              {user?.id === post.authorId ? (
+                <AlertBox onClick={handlePostDelete} />
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div className="ps-14 mt-4 text-lg font-medium pb-4">
             {post.content}
           </div>
         </div>
-        {user && (
-          <div className="w-full flex justify-start items-center gap-8">
-            <div className="flex items-center gap-2">
-              <Button
-                variant={"ghost"}
-                onClick={() => toggleLike()}
-                disabled={isLiked}
-              >
-                <Heart
-                  fill={liked ? "red" : ""}
-                  stroke={liked ? "red" : "white"}
-                  className="size-6"
-                />
-              </Button>
-              <Toaster />
-              {totalLikes}
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant={"ghost"}>
-                <MessageCircle className="size-6" />
-              </Button>
-              {post._count.comments}
-            </div>
-          </div>
-        )}
-      </CardTitle>
-      <hr />
-      <CardFooter className="px-0 w-full">
-        <div className="w-full">
-          <div></div>
-          <div className="w-full">
-            <CardContent>
-              <div className="flex gap-4 items-start">
-                <ImageBox src={user?.image} size={40} />
-                <Textarea
-                  placeholder="Comment your thoughts"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <div className="flex w-full justify-end ps-14 mt-4">
+
+        <div className="w-full flex justify-start items-center gap-8">
+          <div className="flex items-center gap-2">
+            {user && (
+              <>
                 <Button
-                  variant={"secondary"}
-                  onClick={() => handleComment()}
-                  disabled={isCommenting}
+                  variant={"ghost"}
+                  onClick={() => toggleLike()}
+                  disabled={isLiked}
                 >
-                  <Send />
-                  Comment
+                  <Heart
+                    fill={liked ? "red" : ""}
+                    stroke={liked ? "red" : "white"}
+                    className="size-6"
+                  />
+
+                  <Toaster />
+                  {totalLikes}
                 </Button>
-                <Toaster />
-              </div>
-            </CardFooter>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={"ghost"}
+              onClick={() => setShowComment((prev) => !prev)}
+            >
+              <MessageCircle
+                fill={showComment ? "blue" : ""}
+                stroke={showComment ? "blue" : "white"}
+                className="size-6"
+              />
+
+              {post._count.comments}
+            </Button>
           </div>
         </div>
-      </CardFooter>
+      </CardTitle>
+      {showComment && (
+        <>
+          <hr />
+          <CardFooter className="px-0 w-full">
+            <div className="w-full">
+              <div>
+                {post.comments.map((comment) => (
+                  <div className="mb-8" key={comment.id}>
+                    <div className="flex gap-4 items-center">
+                      <ImageBox src={comment.author.image} size={40} />
+                      <div className="w-full flex justify-between items-center">
+                        <div className="flex gap-6 items-center">
+                          <h2>{comment.author.name}</h2>
+                          <p className="text-sm text-gray-500 hidden md:block">
+                            {formatDistanceToNow(new Date(comment.createdAt))}{" "}
+                            Ago
+                          </p>
+                        </div>
+                        {user?.id === comment.authorId && (
+                          <div>
+                            <Button
+                              variant={"secondary"}
+                              onClick={() => handleCommentDelete(comment.id)}
+                              disabled={isDeletingComment}
+                            >
+                              <Trash stroke="red" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="ms-14">{comment.content}</div>
+                  </div>
+                ))}
+              </div>
+              {user && !commented && (
+                <div className="w-full">
+                  <div>
+                    <div className="flex gap-4 items-start">
+                      <ImageBox src={user?.image} size={40} />
+                      <Textarea
+                        placeholder="Comment your thoughts"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex w-full justify-end ps-14 mt-4">
+                      <Button
+                        variant={"secondary"}
+                        onClick={() => handleComment()}
+                        disabled={isCommenting}
+                      >
+                        <Send />
+                        Comment
+                      </Button>
+                      <Toaster />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 }

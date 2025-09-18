@@ -85,6 +85,7 @@ model Comment {
   authorId String
   postId String
   notifications Notification[]
+  createdAt DateTime @default(now())
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade) 
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
