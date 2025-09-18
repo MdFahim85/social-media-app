@@ -178,7 +178,7 @@ function PostCard({ post }: PostCardProps) {
                           <h2>{comment.author.name}</h2>
                           <p className="text-sm text-gray-500 hidden md:block">
                             {formatDistanceToNow(new Date(comment.createdAt))}{" "}
-                            Ago
+                            ago
                           </p>
                         </div>
                         {user?.id === comment.authorId && (

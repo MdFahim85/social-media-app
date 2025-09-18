@@ -54,3 +54,31 @@ export async function GET(req: NextRequest) {
     notifications,
   });
 }
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { userId } = body;
+  await prisma.notification.updateMany({
+    where: {
+      userId: {
+        in: userId,
+      },
+    },
+    data: {
+      read: true,
+    },
+  });
+
+  return NextResponse.json({ message: "Notifications updated" });
+}
+
+export async function DELETE(req: NextRequest) {
+  const body = await req.json();
+  const { id } = body;
+  await prisma.notification.delete({
+    where: {
+      id,
+    },
+  });
+  return NextResponse.json({ message: "Notification deleted" });
+}

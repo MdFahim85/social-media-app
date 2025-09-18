@@ -67,11 +67,21 @@ export async function getNotifications() {
   }
 }
 
-export async function readNotifications(id: string) {
+export async function readNotification(userId: string) {
   try {
-    const res = await API.post("/notifications", id);
+    const res = await API.post("/notifications", { data: { userId } });
     return res;
   } catch (error) {
     console.log("Something went wrong");
+  }
+}
+
+export async function deleteNotification(id: string) {
+  try {
+    const res = await API.delete("/notifications", { data: { id } });
+    return res;
+  } catch (error) {
+    console.log("Something went wrong");
+    console.log(error);
   }
 }
