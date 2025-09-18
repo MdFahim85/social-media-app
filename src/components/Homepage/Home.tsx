@@ -2,19 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Postbox from "./Post/Postbox";
-import API from "@/app/api/axios";
 import PostCard from "@/components/Homepage/Post/PostCard";
 import { PostWithAllRelations } from "../../../types/postType";
 import Loading from "./LoadingSkeleton";
-
-const getPosts = async () => {
-  try {
-    const res = await API.get("/posts");
-    return res.data;
-  } catch (error) {
-    console.log("error fetching posts");
-  }
-};
+import { getPosts } from "@/lib/api/userApi";
 
 function Home() {
   const { isPending, isError, data, error } = useQuery({

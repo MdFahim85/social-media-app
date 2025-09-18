@@ -5,25 +5,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageIcon, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import API from "@/app/api/axios";
 import ImageBox from "@/components/ImageBox";
-
-type POST = {
-  authorId: String | undefined; //user.id = authorId
-  content: String;
-};
-
-async function addPost(post: POST) {
-  try {
-    const res = await API.post("/posts", post);
-    return res;
-  } catch (error) {
-    console.log(error);
-  }
-}
+import { addPost } from "@/lib/api/userApi";
 
 function Postbox() {
   const { data: session } = useSession();
@@ -61,7 +46,7 @@ function Postbox() {
   }
 
   return (
-    <Card className="w-full mb-4">
+    <Card className="w-full mb-4 py-8">
       <CardTitle>
         <h1 className="text-lg text-center">Create a post</h1>
       </CardTitle>

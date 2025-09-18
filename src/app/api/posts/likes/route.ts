@@ -56,13 +56,14 @@ export async function POST(req: NextRequest) {
         postId,
       },
     }),
-    ...(post.authorId !== userId
+    ...(post.authorId === userId
       ? [
           prisma.notification.create({
             data: {
               type: "LIKE",
               userId: authorId as string,
               creatorId: userId as string,
+              postId,
             },
           }),
         ]

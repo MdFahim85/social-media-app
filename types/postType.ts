@@ -11,6 +11,37 @@ const postQuery = {
   },
 };
 
+const notificationQuery = {
+  include: {
+    creator: {
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+    },
+    post: {
+      select: {
+        id: true,
+        content: true,
+        image: true,
+      },
+    },
+    comment: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+      },
+    },
+  },
+};
+
+export type POST = {
+  authorId: String | undefined; //user.id = authorId
+  content: String;
+};
+
 export type LIKE = {
   authorId: String | undefined; //user.id = authorId
   postId: String;
@@ -22,3 +53,7 @@ export type COMMENT = {
 };
 
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
+
+export type Notifications = Prisma.NotificationGetPayload<
+  typeof notificationQuery
+>;

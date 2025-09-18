@@ -1,5 +1,5 @@
 import API from "@/app/api/axios";
-import { COMMENT, LIKE } from "../../../types/postType";
+import { COMMENT, LIKE, POST } from "../../../types/postType";
 
 export async function likeUnlike(like: LIKE) {
   const res = await API.post("/posts/likes", like);
@@ -8,6 +8,24 @@ export async function likeUnlike(like: LIKE) {
     throw new Error(error.message);
   }
   return res;
+}
+
+export const getPosts = async () => {
+  try {
+    const res = await API.get("/posts");
+    return res.data;
+  } catch (error) {
+    console.log("error fetching posts");
+  }
+};
+
+export async function addPost(post: POST) {
+  try {
+    const res = await API.post("/posts", post);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function deletePost(id: any) {
@@ -38,4 +56,22 @@ export async function deleteComment(id: string) {
     throw new Error(error.message);
   }
   return res;
+}
+
+export async function getNotifications() {
+  try {
+    const res = await API.get("/notifications");
+    return res;
+  } catch (error) {
+    console.log("error fetching notifications");
+  }
+}
+
+export async function readNotifications(id: string) {
+  try {
+    const res = await API.post("/notifications", id);
+    return res;
+  } catch (error) {
+    console.log("Something went wrong");
+  }
 }

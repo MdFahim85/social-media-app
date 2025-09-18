@@ -1,15 +1,11 @@
 "use client";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { Card, CardFooter, CardTitle } from "@/components/ui/card";
 import { PostWithAllRelations } from "../../../../types/postType";
 import ImageBox from "@/components/ImageBox";
 import { Heart, MessageCircle, Send, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
