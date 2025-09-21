@@ -7,7 +7,7 @@ function LoginButton({
   text,
   variant,
 }: {
-  text: String;
+  text: string;
   variant:
     | "link"
     | "default"
@@ -25,7 +25,7 @@ function LoginButton({
   );
 }
 
-function LogoutButton({ text }: { text: String }) {
+function LogoutButton({ text }: { text: string }) {
   return <Button onClick={() => logout()}>{text}</Button>;
 }
 

@@ -28,7 +28,7 @@ export async function addPost(post: POST) {
   }
 }
 
-export async function deletePost(id: any) {
+export async function deletePost(id: string) {
   const res = await API.delete("/posts", { data: { id } });
   console.log(res);
   if (res.data.status == 401 || res.data.status == 404) {
