@@ -1,5 +1,5 @@
 import API from "@/app/api/axios";
-import { COMMENT, LIKE, POST } from "../../../types/postType";
+import { COMMENT, LIKE, POST } from "../../../types/types";
 
 export async function likeUnlike(like: LIKE) {
   const res = await API.post("/posts/likes", like);

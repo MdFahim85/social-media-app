@@ -8,7 +8,7 @@ import {
   readNotification,
 } from "@/lib/api/userApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Notifications } from "../../../types/postType";
+import { Notifications } from "../../../types/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import ImageBox from "@/components/ImageBox";

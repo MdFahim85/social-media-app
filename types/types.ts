@@ -37,6 +37,20 @@ const notificationQuery = {
   },
 };
 
+const suggesterUsersQuery = {
+  select: {
+    id: true,
+    name: true,
+    email: true,
+    image: true,
+    _count: {
+      select: {
+        followers: true,
+      },
+    },
+  },
+};
+
 export type POST = {
   authorId: String | undefined; //user.id = authorId
   content: String;
@@ -57,3 +71,5 @@ export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
 export type Notifications = Prisma.NotificationGetPayload<
   typeof notificationQuery
 >;
+
+export type SuggestedUser = Prisma.UserGetPayload<typeof suggesterUsersQuery>;

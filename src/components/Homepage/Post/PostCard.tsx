@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardFooter, CardTitle } from "@/components/ui/card";
-import { PostWithAllRelations } from "../../../../types/postType";
+import { PostWithAllRelations } from "../../../../types/types";
 import ImageBox from "@/components/ImageBox";
 import { Heart, MessageCircle, Send, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";

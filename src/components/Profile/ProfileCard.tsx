@@ -21,7 +21,7 @@ import { FileText, Heart, MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { PostWithAllRelations } from "../../../types/postType";
+import { PostWithAllRelations } from "../../../types/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
