@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
   }
   const userId = token.sub;
   const { authorId, postId } = body;
-  console.log(authorId, postId);
   if (!authorId || !postId) {
     return NextResponse.json({ message: "Error", status: 404 });
   }
