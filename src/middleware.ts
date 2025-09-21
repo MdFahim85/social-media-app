@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
-import { auth } from "@/auth";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 const protectedRoutes = ["/profile"];
 
 export default async function middleware(req: NextRequest) {
-  const session = await auth();
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
   const { pathname } = req.nextUrl;
 
@@ -13,7 +13,7 @@ export default async function middleware(req: NextRequest) {
     pathname.startsWith(route)
   );
 
-  if (isProtected && !session) {
+  if (isProtected && !token) {
     return NextResponse.redirect(new URL("/api/auth/signin", req.url));
   }
 
