@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageIcon, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -73,7 +73,6 @@ function Postbox() {
             <Send />
             Post
           </Button>
-          <Toaster />
         </div>
       </CardFooter>
     </Card>

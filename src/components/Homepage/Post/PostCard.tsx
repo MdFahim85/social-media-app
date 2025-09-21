@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 import AlertBox from "@/components/AlertBox";
 import { Textarea } from "@/components/ui/textarea";
@@ -140,8 +140,6 @@ function PostCard({ post }: PostCardProps) {
                     stroke={liked ? "red" : "white"}
                     className="size-6"
                   />
-
-                  <Toaster />
                   {totalLikes}
                 </Button>
               </>
@@ -220,7 +218,6 @@ function PostCard({ post }: PostCardProps) {
                         <Send />
                         Comment
                       </Button>
-                      <Toaster />
                     </div>
                   </div>
                 </div>

@@ -12,7 +12,7 @@ import { Notifications } from "../../../types/postType";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import ImageBox from "@/components/ImageBox";
-import { Check, CheckCheck, Heart, MessageCircle, Trash } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 
