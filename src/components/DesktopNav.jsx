@@ -35,7 +35,7 @@ async function DesktopNav() {
         ) : (
           <>
             <li>
-              <Link href="/profile">
+              <Link href={`/profile/${user.id}`}>
                 <Image
                   src={user.image}
                   alt="UserAvatar"

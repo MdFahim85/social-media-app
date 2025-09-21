@@ -12,7 +12,7 @@ import { Notifications } from "../../../types/postType";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import ImageBox from "@/components/ImageBox";
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle, UserRoundPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 
@@ -39,8 +39,7 @@ function NotificationCards() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["fetchNotifications"],
-      }),
-        toast.success("Notifications deleted");
+      });
     },
   });
 
@@ -131,16 +130,19 @@ function NotificationCards() {
                           )}{" "}
                           ago
                         </p>
+                        <div className="m-4 p-4 bg-gray-100 dark:bg-neutral-800 rounded-md">
+                          {notification.post?.content}
+                        </div>
                       </div>
                     ) : (
-                      ""
+                      <div className="mt-2 flex gap-2">
+                        <UserRoundPlus />
+                        {notification.creator.name} has started following you
+                      </div>
                     )}
                   </div>
-                  <div className="mx-16 m-4 p-4 bg-gray-100 dark:bg-neutral-800 rounded-md">
-                    {notification.post?.content}
-                  </div>
                 </div>
-                <Separator className="my-2" />
+                <Separator className="my-4" />
               </div>
             ))
           ) : (

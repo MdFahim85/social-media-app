@@ -107,7 +107,7 @@ function PostCard({ post }: PostCardProps) {
           <div className="flex gap-4 items-center justify-between">
             <div className="flex gap-4 items-center">
               <ImageBox src={post.author.image} size={40} />
-              <h2>{post.author.name}</h2>
+              <h2 className="text-gray-300">{post.author.name}</h2>
               <p className="text-sm text-gray-500 hidden md:block">
                 {post.author.email}
               </p>
