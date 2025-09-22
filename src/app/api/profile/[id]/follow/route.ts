@@ -14,7 +14,7 @@ export async function GET(
     });
   }
   const userId = token.sub;
-  const { id } = await params;
+  const { id } = params;
 
   const follow = await prisma.follows.findUnique({
     where: {
@@ -36,7 +36,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = params;
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return NextResponse.json({
