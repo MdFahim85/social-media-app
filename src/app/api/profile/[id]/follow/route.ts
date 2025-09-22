@@ -1,11 +1,9 @@
 import { prisma } from "@/prisma";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { Params } from "../../../../../../types/types";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: Params) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return NextResponse.json({
@@ -32,10 +30,7 @@ export async function GET(
   return NextResponse.json({ message: "Result found", isFollowing });
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: Params) {
   const { id } = params;
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {

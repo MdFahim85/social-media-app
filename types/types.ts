@@ -1,5 +1,9 @@
 import { Prisma } from "@prisma/client";
 
+export type Params = {
+  params: { id: string };
+};
+
 const postQuery = {
   include: {
     author: { select: { name: true, image: true, email: true } },
@@ -52,18 +56,18 @@ const suggesterUsersQuery = {
 };
 
 export type POST = {
-  authorId: String | undefined; //user.id = authorId
-  content: String;
+  authorId: string | undefined; //user.id = authorId
+  content: string;
 };
 
 export type LIKE = {
-  authorId: String | undefined; //user.id = authorId
-  postId: String;
+  authorId: string | undefined; //user.id = authorId
+  postId: string;
 };
 
 export type COMMENT = {
-  postId: String;
-  content: String;
+  postId: string;
+  content: string;
 };
 
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
