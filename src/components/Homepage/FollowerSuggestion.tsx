@@ -47,62 +47,69 @@ function FollowerSuggestion() {
 
   const suggestedUsers = data?.data?.suggestedUsers;
   return (
-    <div>
-      <Card>
+    <div className="w-full">
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle>Follower Suggestions</CardTitle>
+          <CardTitle className="text-lg md:text-xl lg:text-2xl">
+            Follower Suggestions
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {suggestedUsers ? (
             suggestedUsers.length ? (
-              suggestedUsers.map((user: SuggestedUser) => (
-                <Card key={user.id}>
-                  <CardContent>
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <ImageBox src={user.image} size={40} />
-                        <div>
-                          <h2>{user.name}</h2>
-                          <p className="text-gray-500">{user.email}</p>
-                          <p className="text-gray-500">
-                            {user._count.followers} followers
-                          </p>
+              <div className="flex flex-col gap-4">
+                {suggestedUsers.map((user: SuggestedUser) => (
+                  <Card key={user.id} className="w-full">
+                    <CardContent>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <ImageBox src={user.image} size={40} />
+                          <div className="text-sm md:text-base">
+                            <h2 className="font-medium">{user.name}</h2>
+                            <p className="text-gray-500 text-xs md:text-sm">
+                              {user.email}
+                            </p>
+                            <p className="text-gray-500 text-xs md:text-sm">
+                              {user._count.followers} followers
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex justify-end sm:justify-start">
+                          <Button
+                            variant={"secondary"}
+                            onClick={() => handleFollow(user.id)}
+                            disabled={isFollowingUser}
+                            className="w-full sm:w-auto"
+                          >
+                            Follow
+                          </Button>
                         </div>
                       </div>
-                      <div>
-                        <Button
-                          variant={"secondary"}
-                          onClick={() => handleFollow(user.id)}
-                          disabled={isFollowingUser}
-                        >
-                          Follow
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             ) : (
-              <Card className="w-full  mx-auto mt-8  text-center">
+              <Card className="w-full mx-auto mt-8 text-center">
                 <CardHeader className="flex flex-col items-center justify-center py-6">
                   <SearchX className="w-12 h-12 text-gray-200 mb-2" />
-                  <CardTitle className="text-lg font-semibold text-gray-200">
+                  <CardTitle className="text-base md:text-lg font-semibold text-gray-200">
                     No user found
                   </CardTitle>
-                  <CardDescription className="text-gray-500">
+                  <CardDescription className="text-xs md:text-sm text-gray-500">
                     Check again later
                   </CardDescription>
                 </CardHeader>
               </Card>
             )
           ) : (
-            <Card className="w-full  mx-auto mt-8  text-center">
+            <Card className="w-full mx-auto mt-8 text-center">
               <CardHeader className="flex flex-col items-center justify-center py-6">
                 <LogIn className="w-12 h-12 text-gray-200 mb-2" />
-                <CardTitle className="text-lg font-semibold text-gray-200">
+                <CardTitle className="text-base md:text-lg font-semibold text-gray-200">
                   Sign Up / Sign In
                 </CardTitle>
-                <CardDescription className="text-gray-500">
+                <CardDescription className="text-xs md:text-sm text-gray-500">
                   Sign Up / Log In to Access this feature
                 </CardDescription>
               </CardHeader>

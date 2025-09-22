@@ -65,17 +65,19 @@ function NotificationCards() {
     return <Loading />;
   }
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <h1 className="font-bold dark:text-gray-300">Notifications</h1>
-          <div className="flex flex-col items-end">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <h1 className="font-bold dark:text-gray-300 text-lg sm:text-xl">
+            Notifications
+          </h1>
+          <div className="flex flex-col sm:items-end gap-2">
             <p className="text-sm">{unreadNotificationsCount} unread</p>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant={"link"}
-                className="px-0 py-2 text-xs"
+                className="px-0 py-2 text-xs sm:text-sm"
                 onClick={() => handleUnreadNotifications()}
                 disabled={!unreadNotificationsCount || isReading}
               >
@@ -85,7 +87,7 @@ function NotificationCards() {
               </Button>
               <Button
                 variant={"link"}
-                className="px-0 py-2 text-xs"
+                className="px-0 py-2 text-xs sm:text-sm"
                 onClick={() => handleDeleteNotifications()}
                 disabled={!notifications?.length || isDeleting}
               >
@@ -96,25 +98,28 @@ function NotificationCards() {
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-4/5 w-full">
+        <ScrollArea className="h-[70vh] w-full">
           {notifications ? (
             notifications.map((notification: Notifications) => (
               <div key={notification.id}>
                 <div>
-                  <div className="flex gap-4 items-start">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start">
                     <div>
                       <ImageBox src={notification.creator.image} size={40} />
                     </div>
                     {notification.type === "COMMENT" ||
                     notification.type === "LIKE" ? (
                       <div className="w-full">
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
                           {notification.type == "LIKE" ? (
-                            <Heart />
+                            <Heart className="shrink-0" />
                           ) : (
-                            <MessageCircle />
-                          )}{" "}
-                          {notification.creator.name} has{" "}
+                            <MessageCircle className="shrink-0" />
+                          )}
+                          <span className="font-medium">
+                            {notification.creator.name}
+                          </span>{" "}
+                          has{" "}
                           {notification.type == "LIKE" ? "liked" : "commented"}{" "}
                           on your post{" "}
                           {notification.comment
@@ -122,20 +127,23 @@ function NotificationCards() {
                             : ""}
                         </div>
 
-                        <p className="ms-8 pt-2 text-sm text-zinc-400">
+                        <p className="ms-8 pt-2 text-xs sm:text-sm text-zinc-400">
                           {formatDistanceToNow(
                             new Date(notification.createdAt)
                           )}{" "}
                           ago
                         </p>
-                        <div className="m-4 p-4 bg-gray-100 dark:bg-neutral-800 rounded-md">
+                        <div className="m-2 sm:m-4 p-3 sm:p-4 bg-gray-100 dark:bg-neutral-800 rounded-md text-sm sm:text-base break-words">
                           {notification.post?.content}
                         </div>
                       </div>
                     ) : (
-                      <div className="mt-2 flex gap-2">
-                        <UserRoundPlus />
-                        {notification.creator.name} has started following you
+                      <div className="mt-2 flex items-center gap-2 text-sm sm:text-base">
+                        <UserRoundPlus className="shrink-0" />
+                        <span className="font-medium">
+                          {notification.creator.name}
+                        </span>{" "}
+                        has started following you
                       </div>
                     )}
                   </div>
@@ -144,7 +152,7 @@ function NotificationCards() {
               </div>
             ))
           ) : (
-            <div className="flex items-center justify-center text-xl text-center h-27">
+            <div className="flex items-center justify-center text-base sm:text-lg text-center h-28">
               {data?.data.message}
             </div>
           )}
