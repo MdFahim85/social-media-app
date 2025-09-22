@@ -26,9 +26,9 @@ async function MobileNav() {
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px]">
         <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+          <SheetTitle className="border-b border-white pb-6">Menu</SheetTitle>
         </SheetHeader>
-        <div className="mt-6">
+        <div>
           <ul className="flex flex-col gap-4">
             <li>
               <Link
@@ -45,7 +45,6 @@ async function MobileNav() {
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <Bell className="h-5 w-5" />
-                <span>Notifications</span>
                 <NotificationCount />
               </Link>
             </li>
@@ -74,9 +73,9 @@ async function MobileNav() {
                 </li>
               </>
             )}
-            <li className="mt-4 border-t pt-4">
+            <li>
               <div className="flex items-center gap-3 p-3">
-                <span>Theme</span>
+                <span>Mode</span>
                 <ModeToggle />
               </div>
             </li>

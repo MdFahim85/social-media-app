@@ -1,5 +1,4 @@
 "use client";
-import Loading from "@/components/Homepage/LoadingSkeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -15,6 +14,7 @@ import ImageBox from "@/components/ImageBox";
 import { Heart, MessageCircle, UserRoundPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
+import NotificationSkeleton from "./NotificationSkeleton";
 
 function NotificationCards() {
   const queryClient = useQueryClient();
@@ -62,7 +62,7 @@ function NotificationCards() {
   };
 
   if (isPending) {
-    return <Loading />;
+    return <NotificationSkeleton />;
   }
   return (
     <Card className="w-full">

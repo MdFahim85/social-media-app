@@ -7,7 +7,6 @@ import {
 } from "@/lib/api/profileApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import Loading from "../Homepage/LoadingSkeleton";
 import {
   Card,
   CardContent,
@@ -25,6 +24,7 @@ import { PostWithAllRelations } from "../../../types/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import ProfileCardSkeleton from "./ProfileCardSkeleton";
 
 function ProfileCard() {
   const params = useParams();
@@ -71,7 +71,7 @@ function ProfileCard() {
   };
 
   if (isPending || isFollowPending) {
-    return <Loading />;
+    return <ProfileCardSkeleton />;
   }
 
   if (isError) {
@@ -93,7 +93,7 @@ function ProfileCard() {
             <CardHeader>
               <CardTitle>
                 <div className="w-full flex justify-center">
-                  <ImageBox src={user.image} size={40} />
+                  <ImageBox src={user.image} size={80} />
                 </div>
               </CardTitle>
             </CardHeader>

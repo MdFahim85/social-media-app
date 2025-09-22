@@ -2,7 +2,6 @@
 
 import { getSuggestedUsers } from "@/lib/api/followerApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Loading from "./LoadingSkeleton";
 import {
   Card,
   CardContent,
@@ -16,6 +15,7 @@ import { Button } from "../ui/button";
 import { LogIn, SearchX } from "lucide-react";
 import { followUser } from "@/lib/api/profileApi";
 import toast from "react-hot-toast";
+import FollowerSuggestionSkeleton from "./FollowSuggestionSkeleton";
 
 function FollowerSuggestion() {
   const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ function FollowerSuggestion() {
   };
 
   if (isPending) {
-    return <Loading />;
+    return <FollowerSuggestionSkeleton />;
   }
 
   const suggestedUsers = data?.data?.suggestedUsers;
@@ -66,9 +66,6 @@ function FollowerSuggestion() {
                           <ImageBox src={user.image} size={40} />
                           <div className="text-sm md:text-base">
                             <h2 className="font-medium">{user.name}</h2>
-                            <p className="text-gray-500 text-xs md:text-sm">
-                              {user.email}
-                            </p>
                             <p className="text-gray-500 text-xs md:text-sm">
                               {user._count.followers} followers
                             </p>
@@ -94,7 +91,7 @@ function FollowerSuggestion() {
                 <CardHeader className="flex flex-col items-center justify-center py-6">
                   <SearchX className="w-12 h-12 text-gray-200 mb-2" />
                   <CardTitle className="text-base md:text-lg font-semibold text-gray-200">
-                    No user found
+                    No user found for now
                   </CardTitle>
                   <CardDescription className="text-xs md:text-sm text-gray-500">
                     Check again later

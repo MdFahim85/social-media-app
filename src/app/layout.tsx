@@ -40,9 +40,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <div className="min-h-screen mt-0">
+              <div className="min-h-screen mt-0 ">
                 <Navbar />
-                <div className="px-20">{children}</div>
+                <div className="px-4 md:px-20">{children}</div>
               </div>
               <Toaster />
             </ThemeProvider>
