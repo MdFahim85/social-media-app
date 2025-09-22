@@ -17,6 +17,7 @@ import {
   deletePost,
   likeUnlike,
 } from "@/lib/api/userApi";
+import Link from "next/link";
 
 type PostCardProps = { post: PostWithAllRelations };
 
@@ -109,17 +110,20 @@ function PostCard({ post }: PostCardProps) {
         <div>
           {/* Header */}
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
-              <ImageBox src={post.author.image} size={40} />
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                <h2 className="text-gray-300 text-base sm:text-lg font-medium">
-                  {post.author.name}
-                </h2>
-                <p className="text-xs sm:text-sm text-gray-500 hidden md:block">
-                  {post.author.email}
-                </p>
+            <Link href={`/profile/${post.authorId}`}>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
+                <ImageBox src={post.author.image} size={40} />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                  <h2 className="text-gray-300 text-base sm:text-lg font-medium">
+                    {post.author.name}
+                  </h2>
+
+                  <p className="text-xs sm:text-sm text-gray-500 hidden md:block">
+                    {post.author.email}
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
             <div className="flex items-center gap-2 text-sm">
               <p className="text-gray-500">{postedDate} ago</p>
               {user?.id === post.authorId && (

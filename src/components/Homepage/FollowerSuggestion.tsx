@@ -16,6 +16,7 @@ import { LogIn, SearchX } from "lucide-react";
 import { followUser } from "@/lib/api/profileApi";
 import toast from "react-hot-toast";
 import FollowerSuggestionSkeleton from "./FollowSuggestionSkeleton";
+import Link from "next/link";
 
 function FollowerSuggestion() {
   const queryClient = useQueryClient();
@@ -62,15 +63,17 @@ function FollowerSuggestion() {
                   <Card key={user.id} className="w-full">
                     <CardContent>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                          <ImageBox src={user.image} size={40} />
-                          <div className="text-sm md:text-base">
-                            <h2 className="font-medium">{user.name}</h2>
-                            <p className="text-gray-500 text-xs md:text-sm">
-                              {user._count.followers} followers
-                            </p>
+                        <Link href={`/profile/${user.id}`}>
+                          <div className="flex items-center gap-4">
+                            <ImageBox src={user.image} size={40} />
+                            <div className="text-sm md:text-base">
+                              <h2 className="font-medium">{user.name}</h2>
+                              <p className="text-gray-500 text-xs md:text-sm">
+                                {user._count.followers} followers
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        </Link>
                         <div className="flex justify-end sm:justify-start">
                           <Button
                             variant={"secondary"}

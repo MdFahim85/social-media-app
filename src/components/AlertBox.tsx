@@ -14,7 +14,7 @@ import { Trash } from "lucide-react";
 
 function AlertBox({ onClick }: { onClick: React.MouseEventHandler }) {
   return (
-    <div className="z-50">
+    <div className="z-10">
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button

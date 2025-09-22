@@ -4,7 +4,7 @@ import Link from "next/link";
 
 function Navbar() {
   return (
-    <div className="sticky top-0 flex mb-4 py-4 px-4 md:px-20 border-b justify-between items-center dark:bg-neutral-950 bg-white z-999">
+    <div className="sticky top-0 flex mb-4 py-4 px-4 md:px-20 border-b justify-between items-center dark:bg-neutral-950 bg-white z-50">
       <div className="font-bold text-xl">
         <Link href={"/"}>Social Media</Link>
       </div>
