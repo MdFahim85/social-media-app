@@ -40,7 +40,9 @@ function PostCard({ post }: PostCardProps) {
   const { mutate: commentAdd, isPending: isCommenting } = useMutation({
     mutationFn: (content: string) => addComment({ content, postId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchPosts", "fetchNotifications"],
+      });
       toast.success("Comment added");
       setCommented((prev) => !prev);
       setContent("");
@@ -55,6 +57,7 @@ function PostCard({ post }: PostCardProps) {
     onSuccess: () => {
       setLiked((prev) => !prev);
       setTotalLikes((prev) => prev + (liked ? -1 : 1));
+      queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -136,8 +139,9 @@ function PostCard({ post }: PostCardProps) {
                   disabled={isLiked}
                 >
                   <Heart
-                    fill={liked ? "red" : ""}
+                    fill={liked ? "red" : "transparent"}
                     stroke={liked ? "red" : "white"}
+                    strokeWidth={1}
                     className="size-6"
                   />
                   {totalLikes}
@@ -151,8 +155,9 @@ function PostCard({ post }: PostCardProps) {
               onClick={() => setShowComment((prev) => !prev)}
             >
               <MessageCircle
-                fill={showComment ? "blue" : ""}
-                stroke={showComment ? "blue" : "white"}
+                fill={showComment ? "#0097f5" : "transparent"}
+                stroke={showComment ? "#0097f5" : "white"}
+                strokeWidth={1}
                 className="size-6"
               />
 

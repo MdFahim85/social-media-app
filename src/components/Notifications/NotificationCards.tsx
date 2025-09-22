@@ -19,7 +19,7 @@ import { formatDistanceToNow } from "date-fns";
 function NotificationCards() {
   const queryClient = useQueryClient();
 
-  const { isPending, isError, data, error } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ["fetchNotifications"],
     queryFn: getNotifications,
   });
@@ -27,10 +27,8 @@ function NotificationCards() {
   const { mutate: readNotif, isPending: isReading } = useMutation({
     mutationFn: (userId: string) => readNotification(userId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["fetchNotifications"],
-      }),
-        toast.success("Notifications updated");
+      queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
+      toast.success("Notifications updated");
     },
   });
 

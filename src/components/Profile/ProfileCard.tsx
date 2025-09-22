@@ -119,7 +119,7 @@ function ProfileCard() {
                 <Button
                   className="w-full"
                   onClick={() => handleFollow(user.id)}
-                  disabled={isFollowingUser}
+                  a
                 >
                   Follow
                 </Button>
