@@ -1,89 +1,36 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { Params } from "../../../../../types/types";
+import { RouteContext } from "../../../../../types/types";
 
+export async function GET(req: NextRequest, context: RouteContext) {
+  try {
+    // Await the params Promise
+    const params = await context.params;
+    const { id } = params;
 
-export async function GET(req: NextRequest, { params }: Params) {
-  const { id } = params;
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      createdAt: true,
-      _count: {
-        select: {
-          followers: true,
-          following: true,
-          posts: true,
-        },
-      },
-    },
-  });
-  const posts = await prisma.post.findMany({
-    where: {
-      authorId: id,
-    },
-    include: {
-      author: {
+    // Execute all queries in parallel for better performance
+    const [user, posts, likedPosts] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id },
         select: {
           id: true,
           name: true,
           email: true,
           image: true,
-        },
-      },
-      comments: {
-        include: {
-          author: {
+          createdAt: true,
+          _count: {
             select: {
-              id: true,
-              name: true,
-              email: true,
-              image: true,
+              followers: true,
+              following: true,
+              posts: true,
             },
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-      likes: {
-        select: {
-          authorId: true,
-        },
-      },
-      _count: {
-        select: {
-          likes: true,
-          comments: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  const likedPosts = await prisma.post.findMany({
-    where: {
-      likes: {
-        some: {
+      }),
+      prisma.post.findMany({
+        where: {
           authorId: id,
         },
-      },
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-        },
-      },
-      comments: {
         include: {
           author: {
             select: {
@@ -93,38 +40,112 @@ export async function GET(req: NextRequest, { params }: Params) {
               image: true,
             },
           },
+          comments: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          likes: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
         },
-      },
-      likes: {
-        select: {
-          authorId: true,
+      }),
+      prisma.post.findMany({
+        where: {
+          likes: {
+            some: {
+              authorId: id,
+            },
+          },
         },
-      },
-      _count: {
-        select: {
-          likes: true,
-          comments: true,
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+          comments: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          likes: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
         },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+    ]);
 
-  if (!user || !posts || !likedPosts) {
+    // Check if user exists (posts and likedPosts can be empty arrays)
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: "User not found",
+          status: 404,
+        },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
-      message: "Resource not found",
-      status: 404,
+      message: "Resource found",
+      user,
+      posts: posts || [],
+      likedPosts: likedPosts || [],
     });
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    return NextResponse.json(
+      {
+        message: "Internal server error",
+        status: 500,
+      },
+      { status: 500 }
+    );
   }
-  return NextResponse.json({
-    message: "Resource found",
-    user,
-    posts,
-    likedPosts,
-  });
 }

@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 
-export type Params = {
-  params: { id: string };
+export type RouteContext = {
+  params: Promise<{ id: string }>;
 };
 
 const postQuery = {
