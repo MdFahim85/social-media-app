@@ -1,11 +1,9 @@
 import { prisma } from "@/prisma";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
+import { RouteContext } from "../../../../../../types/types";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: RouteContext) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return NextResponse.json({
@@ -13,8 +11,11 @@ export async function GET(
       status: 401,
     });
   }
+
   const userId = token.sub;
-  const { id } = await params;
+  // Await the params Promise
+  const params = await context.params;
+  const { id } = params;
 
   const follow = await prisma.follows.findUnique({
     where: {
@@ -25,18 +26,15 @@ export async function GET(
     },
   });
 
-  // if (!follow) {
-  //   return NextResponse.json({ message: "Something went wrong", status: 404 });
-  // }
   const isFollowing = !!follow;
   return NextResponse.json({ message: "Result found", isFollowing });
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
+export async function POST(req: NextRequest, context: RouteContext) {
+  // Await the params Promise
+  const params = await context.params;
+  const { id } = params;
+
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return NextResponse.json({
@@ -44,14 +42,17 @@ export async function POST(
       status: 401,
     });
   }
+
   const userId = token.sub;
 
-  if (userId !== id) {
+  // Fixed logic: user should NOT be able to follow themselves
+  if (userId === id) {
     return NextResponse.json({
       message: "You cannot follow yourself",
       status: 403,
     });
   }
+
   const existingFollow = await prisma.follows.findUnique({
     where: {
       followerId_followingId: {
@@ -62,6 +63,7 @@ export async function POST(
   });
 
   if (existingFollow) {
+    // Unfollow
     await prisma.follows.delete({
       where: {
         followerId_followingId: {
@@ -70,8 +72,13 @@ export async function POST(
         },
       },
     });
-    return NextResponse.json({ message: "Success" });
+    return NextResponse.json({
+      message: "Unfollowed successfully",
+      isFollowing: false,
+    });
   }
+
+  // Follow
   await prisma.$transaction([
     prisma.follows.create({
       data: {
@@ -87,5 +94,9 @@ export async function POST(
       },
     }),
   ]);
-  return NextResponse.json({ message: "Following" });
+
+  return NextResponse.json({
+    message: "Following successfully",
+    isFollowing: true,
+  });
 }
