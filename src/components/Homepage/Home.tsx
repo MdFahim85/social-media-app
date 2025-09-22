@@ -3,9 +3,10 @@
 import { useQuery } from "@tanstack/react-query";
 import Postbox from "./Post/Postbox";
 import PostCard from "@/components/Homepage/Post/PostCard";
-import { PostWithAllRelations } from "../../../types/postType";
-import Loading from "./LoadingSkeleton";
+import { PostWithAllRelations } from "../../../types/types";
 import { getPosts } from "@/lib/api/userApi";
+import PostSkeleton from "./Post/PostSkeleton";
+import ErrorCard from "../ErrorCard";
 
 function Home() {
   const { isPending, isError, data, error } = useQuery({
@@ -14,7 +15,11 @@ function Home() {
   });
 
   if (isPending) {
-    return <Loading />;
+    return <PostSkeleton />;
+  }
+
+  if (isError) {
+    return <ErrorCard errorMessage={error.message} />;
   }
 
   return (

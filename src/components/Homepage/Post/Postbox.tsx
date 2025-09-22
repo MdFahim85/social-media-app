@@ -46,32 +46,36 @@ function Postbox() {
   }
 
   return (
-    <Card className="w-full mb-4 py-8">
+    <Card className="w-full mb-4 py-6 sm:py-8">
       <CardTitle>
-        <h1 className="text-lg text-center">Create a post</h1>
+        <h1 className="text-base md:text-lg text-center font-semibold">
+          Create a post
+        </h1>
       </CardTitle>
       <CardContent>
-        <div className="flex gap-4 items-start">
+        <div className="flex flex-col sm:flex-row gap-4 items-start">
           <ImageBox src={user?.image} size={40} />
           <Textarea
-            placeholder="Whats On Your Mind ?"
+            placeholder="What's on your mind?"
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            className="w-full min-h-[80px] text-sm md:text-base"
           />
         </div>
       </CardContent>
       <CardFooter>
-        <div className="flex w-full justify-between ps-14">
-          <Button variant={"secondary"}>
-            <ImageIcon />
+        <div className="flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-0 ps-0 sm:ps-14">
+          <Button variant={"secondary"} className="w-full sm:w-auto">
+            <ImageIcon className="w-4 h-4 md:w-5 md:h-5" />
           </Button>
           <Button
             variant={"secondary"}
             onClick={handleSubmit}
             disabled={isPosting}
+            className="w-full sm:w-auto flex items-center gap-2"
           >
-            <Send />
-            Post
+            <Send className="w-4 h-4 md:w-5 md:h-5" />
+            <span>Post</span>
           </Button>
         </div>
       </CardFooter>

@@ -4,6 +4,7 @@ import { Bell, Home } from "lucide-react";
 import { auth } from "@/auth";
 import { LoginButton, LogoutButton } from "./SignIn";
 import Image from "next/image";
+import NotificationCount from "./NotificationCount";
 
 async function DesktopNav() {
   const session = await auth();
@@ -21,7 +22,7 @@ async function DesktopNav() {
         <li>
           <Link href="/notifications">
             <span className="flex gap-2">
-              <Bell /> Notifications
+              <Bell /> <NotificationCount />
             </span>
           </Link>
         </li>
