@@ -78,7 +78,7 @@ model Post {
   comments Comment[]
   likes Like[]
   notifications Notification[]
-  reposts Repost[]
+  reposts Repost[] @relation("PostReposts")
 }
 
 model Repost {
@@ -88,7 +88,7 @@ model Repost {
   createdAt DateTime @default(now())
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post Post @relation(fields : [postId], references: [id], onDelete: Cascade)
+  post Post @relation("PostReposts", fields : [postId], references: [id], onDelete: Cascade)
   
   @@unique([authorId,postId])
 }
