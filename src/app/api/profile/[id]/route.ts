@@ -18,6 +18,38 @@ export async function GET(req: NextRequest, context: RouteContext) {
           email: true,
           image: true,
           createdAt: true,
+          followers: {
+            select: {
+              follower: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  _count: {
+                    select: {
+                      followers: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          following: {
+            select: {
+              following: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  _count: {
+                    select: {
+                      followers: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           _count: {
             select: {
               followers: true,

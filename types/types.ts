@@ -41,6 +41,55 @@ const notificationQuery = {
   },
 };
 
+const userQuery = {
+  select: {
+    id: true,
+    name: true,
+    email: true,
+    image: true,
+    createdAt: true,
+    followers: {
+      select: {
+        follower: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    following: {
+      select: {
+        following: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    _count: {
+      select: {
+        followers: true,
+        following: true,
+        posts: true,
+      },
+    },
+  },
+};
+
 const suggesterUsersQuery = {
   select: {
     id: true,
@@ -77,3 +126,4 @@ export type Notifications = Prisma.NotificationGetPayload<
 >;
 
 export type SuggestedUser = Prisma.UserGetPayload<typeof suggesterUsersQuery>;
+export type User = Prisma.UserGetPayload<typeof userQuery>;

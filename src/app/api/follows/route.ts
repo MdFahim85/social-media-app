@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const suggestedUsers = await prisma.user.findMany({
     where: {
       AND: [
-        // { NOT: { id: userId } },
+        { NOT: { id: userId } },
         { NOT: { followers: { some: { followerId: userId } } } },
       ],
     },

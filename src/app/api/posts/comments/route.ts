@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
         content,
       },
     });
-    if (post.authorId === userId) {
+    if (post.authorId !== userId) {
       await tx.notification.create({
         data: {
           type: "COMMENT",

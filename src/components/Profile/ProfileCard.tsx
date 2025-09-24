@@ -22,13 +22,14 @@ import { useSession } from "next-auth/react";
 import ProfileCardSkeleton from "./ProfileCardSkeleton";
 import PostsTabContent from "./PostContent";
 import ErrorCard from "../ErrorCard";
+import Modal from "../Modal";
+import { useEffect, useState } from "react";
 
 function ProfileCard() {
   const params = useParams();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const currentUser = session?.user;
-
   const { id } = params;
 
   const { isPending, isError, data, error } = useQuery({
@@ -38,6 +39,17 @@ function ProfileCard() {
   });
 
   const userData = data?.data;
+
+  const [follow, setFollow] = useState(false);
+
+  useEffect(() => {
+    if (userData && currentUser) {
+      const isFollowing = userData.user.followers.some(
+        (f: any) => f.follower.id === currentUser.id
+      );
+      setFollow(isFollowing);
+    }
+  }, [userData, currentUser]);
 
   const {
     isPending: isFollowPending,
@@ -55,6 +67,10 @@ function ProfileCard() {
       queryClient.invalidateQueries({
         queryKey: ["fetchProfileInfo"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchFollowInfo"],
+      });
+      setFollow((prev) => !prev);
     },
     onError: () => {
       toast.error("Something went wrong with the server");
@@ -97,14 +113,9 @@ function ProfileCard() {
               <div className="break-words">{user.email}</div>
             </CardContent>
             <CardContent className="flex justify-between gap-2 text-gray-100 font-medium mt-4">
-              <div className="flex flex-col items-center">
-                <div className="text-lg">{user._count.followers}</div>
-                <div className="text-gray-500 text-sm">Followers</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="text-lg">{user._count.following}</div>
-                <div className="text-gray-500 text-sm">Following</div>
-              </div>
+              <Modal user={user} type="followers" />
+              <Modal user={user} type="following" />
+
               <div className="flex flex-col items-center">
                 <div className="text-lg">{user._count.posts}</div>
                 <div className="text-gray-500 text-sm">Posts</div>
@@ -117,7 +128,7 @@ function ProfileCard() {
                   onClick={() => handleFollow(user.id)}
                   disabled={isFollowingUser}
                 >
-                  Follow
+                  {follow ? "Unfollow" : "Follow"}
                 </Button>
               )}
             </CardFooter>

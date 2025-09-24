@@ -1,5 +1,5 @@
 "use client";
-import { Card, CardFooter, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { PostWithAllRelations } from "../../../../types/types";
 import ImageBox from "@/components/ImageBox";
 import { Heart, MessageCircle, Send, Trash } from "lucide-react";
@@ -133,9 +133,9 @@ function PostCard({ post }: PostCardProps) {
           </div>
 
           {/* Post Content */}
-          <div className="ps-12 sm:ps-14 mt-3 sm:mt-4 text-sm sm:text-lg font-medium pb-4">
+          <CardContent className="pl-0 sm:pl-14 mt-3 sm:mt-4 text-sm sm:text-lg font-medium pb-4">
             {post.content}
-          </div>
+          </CardContent>
         </div>
 
         {/* Actions */}

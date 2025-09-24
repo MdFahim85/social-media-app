@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         postId,
       },
     }),
-    ...(post.authorId === userId
+    ...(post.authorId !== userId
       ? [
           prisma.notification.create({
             data: {
