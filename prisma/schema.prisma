@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   posts Post[]
+  reposts Repost[]
   comments Comment[]
   likes Like[]
   followers Follows[] @relation("following")
@@ -77,6 +78,19 @@ model Post {
   comments Comment[]
   likes Like[]
   notifications Notification[]
+  reposts Repost[]
+}
+
+model Repost {
+  id String @id @default(cuid())
+  authorId String
+  postId String
+  createdAt DateTime @default(now())
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post Post @relation(fields : [postId], references: [id], onDelete: Cascade)
+  
+  @@unique([authorId,postId])
 }
 
 model Comment {
@@ -123,6 +137,7 @@ enum NotificationType {
   LIKE
   COMMENT
   ID
+  REPOST
 }
 
 model Notification {

@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   await prisma.$transaction([
     prisma.like.create({
       data: {
-        authorId,
+        authorId: userId as string,
         postId,
       },
     }),
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
           prisma.notification.create({
             data: {
               type: "LIKE",
-              userId: authorId as string,
+              userId: post.authorId,
               creatorId: userId as string,
               postId,
             },

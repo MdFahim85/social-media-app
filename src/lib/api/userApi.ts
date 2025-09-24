@@ -10,6 +10,21 @@ export async function likeUnlike(like: LIKE) {
   return res;
 }
 
+export async function repostToggle({
+  postId,
+  postAuthorId,
+}: {
+  postId: string;
+  postAuthorId: string;
+}) {
+  const res = await API.post("/repost", { postId, postAuthorId });
+  if (res.data.status === 401) {
+    const error = res.data;
+    throw new Error(error.message);
+  }
+  return res.data;
+}
+
 export const getPosts = async () => {
   try {
     const res = await API.get("/posts");

@@ -29,10 +29,16 @@ export async function GET(_request: NextRequest) {
           authorId: true,
         },
       },
+      reposts: {
+        select: {
+          authorId: true,
+        },
+      },
       _count: {
         select: {
           likes: true,
           comments: true,
+          reposts: true,
         },
       },
     },

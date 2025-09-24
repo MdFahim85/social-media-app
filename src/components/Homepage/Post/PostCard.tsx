@@ -2,7 +2,7 @@
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { PostWithAllRelations } from "../../../../types/types";
 import ImageBox from "@/components/ImageBox";
-import { Heart, MessageCircle, Send, Trash } from "lucide-react";
+import { Heart, MessageCircle, RefreshCcw, Send, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import {
   deleteComment,
   deletePost,
   likeUnlike,
+  repostToggle,
 } from "@/lib/api/userApi";
 import Link from "next/link";
 
@@ -27,10 +28,14 @@ function PostCard({ post }: PostCardProps) {
   const { data: session } = useSession();
   const user = session?.user;
   const postId = post.id;
+
   const [liked, setLiked] = useState(
     post.likes.some((like) => like.authorId == user?.id)
   );
-  const [totalLikes, setTotalLikes] = useState(post._count.likes);
+
+  const [reposted, setReposted] = useState(
+    post.reposts.some((repost) => repost.authorId === user?.id)
+  );
 
   const [content, setContent] = useState("");
   const [showComment, setShowComment] = useState(false);
@@ -42,8 +47,12 @@ function PostCard({ post }: PostCardProps) {
     mutationFn: (content: string) => addComment({ content, postId }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["fetchPosts", "fetchNotifications"],
+        queryKey: ["fetchPosts"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchNotifications"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
       toast.success("Comment added");
       setCommented((prev) => !prev);
       setContent("");
@@ -56,9 +65,28 @@ function PostCard({ post }: PostCardProps) {
   const { mutate, isPending: isLiked } = useMutation({
     mutationFn: (postId: string) => likeUnlike({ authorId: user?.id, postId }),
     onSuccess: () => {
-      setLiked((prev) => !prev);
-      setTotalLikes((prev) => prev + (liked ? -1 : 1));
       queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      setLiked((prev) => !prev);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const { mutate: repost, isPending: isReposting } = useMutation({
+    mutationFn: (postId: string) =>
+      repostToggle({ postId, postAuthorId: post.authorId }),
+    onSuccess: () => {
+      setReposted((prev) => !prev);
+      queryClient.invalidateQueries({
+        queryKey: ["fetchPosts"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchNotifications"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -70,6 +98,7 @@ function PostCard({ post }: PostCardProps) {
     onSuccess: () => {
       toast.success("Post deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -82,6 +111,7 @@ function PostCard({ post }: PostCardProps) {
       setCommented((prev) => !prev);
       toast.success("Comment deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -90,6 +120,10 @@ function PostCard({ post }: PostCardProps) {
 
   function toggleLike() {
     mutate(post.id);
+  }
+
+  function toggleRepost() {
+    repost(post.id);
   }
 
   function handlePostDelete() {
@@ -153,7 +187,7 @@ function PostCard({ post }: PostCardProps) {
                 strokeWidth={1}
                 className="size-5 sm:size-6"
               />
-              <span className="text-sm sm:text-base">{totalLikes}</span>
+              <span className="text-sm sm:text-base">{post._count.likes}</span>
             </Button>
           )}
           <Button
@@ -169,6 +203,19 @@ function PostCard({ post }: PostCardProps) {
             />
             <span className="text-sm sm:text-base">{post._count.comments}</span>
           </Button>
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={() => toggleRepost()}
+            disabled={isReposting}
+          >
+            <RefreshCcw
+              stroke={reposted ? "#14d270" : "white"}
+              strokeWidth={1}
+              className="size-5 sm:size-6"
+            />
+            <span className="text-sm sm:text-base">{post._count.reposts}</span>
+          </Button>
         </div>
       </CardTitle>
 
@@ -183,8 +230,8 @@ function PostCard({ post }: PostCardProps) {
                 {post.comments.map((comment) => (
                   <div className="mb-6 sm:mb-8" key={comment.id}>
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                      <ImageBox src={comment.author.image} size={36} />
-                      <div className="flex-1 flex flex-col sm:flex-row sm:justify-between">
+                      <ImageBox src={comment.author.image} size={32} />
+                      <div className="flex-1 flex gap-4 justify-between">
                         <div className="flex flex-col sm:flex-row gap-1 sm:gap-4">
                           <h2 className="text-sm sm:text-base">
                             {comment.author.name}
@@ -199,14 +246,14 @@ function PostCard({ post }: PostCardProps) {
                             variant="secondary"
                             onClick={() => handleCommentDelete(comment.id)}
                             disabled={isDeletingComment}
-                            className="mt-2 sm:mt-0 w-full sm:w-auto"
+                            className="mt-2 sm:mt-0 w-auto"
                           >
                             <Trash stroke="red" className="w-4 h-4" />
                           </Button>
                         )}
                       </div>
                     </div>
-                    <div className="ms-10 sm:ms-14 mt-1 text-sm sm:text-base">
+                    <div className="pl-0 sm:pl-12 mt-1 text-sm sm:text-base">
                       {comment.content}
                     </div>
                   </div>

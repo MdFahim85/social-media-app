@@ -6,12 +6,41 @@ export type RouteContext = {
 
 const postQuery = {
   include: {
-    author: { select: { name: true, image: true, email: true } },
-    comments: {
-      include: { author: { select: { id: true, name: true, image: true } } },
+    author: {
+      select: {
+        name: true,
+        image: true,
+        email: true,
+      },
     },
-    likes: { select: { authorId: true } },
-    _count: { select: { likes: true, comments: true } },
+    comments: {
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    },
+    likes: {
+      select: {
+        authorId: true,
+      },
+    },
+    reposts: {
+      select: {
+        authorId: true,
+      },
+    },
+    _count: {
+      select: {
+        likes: true,
+        comments: true,
+        reposts: true,
+      },
+    },
   },
 };
 

@@ -94,7 +94,8 @@ function ProfileCard() {
     return <ErrorCard errorMessage={followError.message} />;
   }
 
-  const { likedPosts, posts, user } = userData;
+  const { likedPosts, posts, user, reposts } = userData;
+  console.log(reposts);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -114,12 +115,11 @@ function ProfileCard() {
             </CardContent>
             <CardContent className="flex justify-between gap-2 text-gray-100 font-medium mt-4">
               <Modal user={user} type="followers" />
-              <Modal user={user} type="following" />
-
               <div className="flex flex-col items-center">
                 <div className="text-lg">{user._count.posts}</div>
                 <div className="text-gray-500 text-sm">Posts</div>
               </div>
+              <Modal user={user} type="following" />
             </CardContent>
             <CardFooter>
               {user.id !== currentUser?.id && (
