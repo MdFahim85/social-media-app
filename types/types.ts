@@ -119,6 +119,17 @@ export type COMMENT = {
   content: string;
 };
 
+export type FollowerType = {
+  follower: {
+    id: string;
+    name: string;
+    image: string;
+    _count: {
+      followers: number;
+    };
+  };
+};
+
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
 
 export type Notifications = Prisma.NotificationGetPayload<

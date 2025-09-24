@@ -24,6 +24,7 @@ import PostsTabContent from "./PostContent";
 import ErrorCard from "../ErrorCard";
 import Modal from "../Modal";
 import { useEffect, useState } from "react";
+import { FollowerType } from "../../../types/types";
 
 function ProfileCard() {
   const params = useParams();
@@ -45,7 +46,7 @@ function ProfileCard() {
   useEffect(() => {
     if (userData && currentUser) {
       const isFollowing = userData.user.followers.some(
-        (f: any) => f.follower.id === currentUser.id
+        (f: FollowerType) => f.follower.id === currentUser.id
       );
       setFollow(isFollowing);
     }
@@ -97,7 +98,6 @@ function ProfileCard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-      {/* Profile Sidebar */}
       <div className="md:col-span-4">
         <div className="mb-6 w-full flex justify-center">
           <Card className="w-full text-sm">
