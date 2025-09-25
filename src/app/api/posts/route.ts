@@ -1,3 +1,4 @@
+import cloudinary from "@/lib/cloudinary";
 import { prisma } from "@/prisma";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -48,7 +49,7 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { authorId, content } = body;
+  const { authorId, content, imageUrl } = body;
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   if (!token) {
     return NextResponse.json({
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
     data: {
       content,
       authorId,
+      ...(imageUrl.length && { images: imageUrl }),
     },
   });
   if (!post) {
@@ -85,6 +87,7 @@ export async function DELETE(req: NextRequest) {
     },
     select: {
       authorId: true,
+      images: true,
     },
   });
   if (!post) {
@@ -96,6 +99,24 @@ export async function DELETE(req: NextRequest) {
       status: 401,
     });
   }
+
+  if (post.images.length > 0) {
+    try {
+      for (const url of post.images) {
+        const parts = url.split("/");
+        const fileWithExt = parts.pop() as string;
+        const folder = parts.slice(parts.indexOf("upload") + 2).join("/");
+        const publicId = `${folder}/${fileWithExt.split(".")[0]}`;
+        const res = await cloudinary.uploader.destroy(publicId);
+      }
+    } catch (error) {
+      return NextResponse.json({
+        message: "Error deleting images",
+        status: 500,
+      });
+    }
+  }
+
   await prisma.post.delete({
     where: {
       id,

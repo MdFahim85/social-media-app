@@ -5,7 +5,7 @@ import {
   deleteNotification,
   getNotifications,
   readNotification,
-} from "@/lib/api/userApi";
+} from "@/lib/api/postApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Notifications } from "../../../types/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -41,6 +41,7 @@ function NotificationCards() {
   });
 
   const notifications = data?.data.notifications;
+  console.log(notifications);
 
   const unreadNotificationsCount = notifications
     ? notifications.filter(
@@ -136,13 +137,24 @@ function NotificationCards() {
                           {notification.post?.content}
                         </div>
                       </div>
-                    ) : (
+                    ) : notification.type === "ID" ? (
                       <div className="mt-2 flex items-center gap-2 text-sm sm:text-base">
                         <UserRoundPlus className="shrink-0" />
                         <span className="font-medium">
                           {notification.creator.name}
                         </span>{" "}
                         has started following you
+                      </div>
+                    ) : (
+                      <div className="mt-2 flex items-center gap-2 text-sm sm:text-base">
+                        <UserRoundPlus className="shrink-0" />
+                        <span className="font-medium">
+                          {notification.creator.name}
+                        </span>{" "}
+                        has reposted your post{" "}
+                        <span className="font-bold">
+                          {notification.post?.content}
+                        </span>
                       </div>
                     )}
                   </div>

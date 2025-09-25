@@ -71,7 +71,7 @@ model Post {
   id String @id @default(cuid())
   authorId String
   content String?
-  image String?
+  images String[] @default([])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   author User @relation(fields: [authorId] , references: [id], onDelete: Cascade)
@@ -85,6 +85,7 @@ model Repost {
   id String @id @default(cuid())
   authorId String
   postId String
+  notifications Notification[]
   createdAt DateTime @default(now())
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -148,12 +149,15 @@ model Notification {
   read Boolean @default(false)
   postId String?
   commentId String?
+  repostId String?
   createdAt DateTime @default(now())
 
   user User @relation("userNotifications", fields: [userId], references: [id], onDelete: Cascade)
   creator User @relation("notificationCreator", fields: [creatorId], references: [id], onDelete: Cascade)
   post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
   comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  repost Repost? @relation(fields: [repostId], references: [id], onDelete: Cascade)
+
 
   @@index([userId, createdAt])
 }

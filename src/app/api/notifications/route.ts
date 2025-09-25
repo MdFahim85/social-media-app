@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         select: {
           id: true,
           content: true,
-          image: true,
+          images: true,
         },
       },
       comment: {
@@ -43,6 +43,8 @@ export async function GET(req: NextRequest) {
       createdAt: "desc",
     },
   });
+
+  console.log(notifications);
 
   if (!notifications.length) {
     return NextResponse.json({ message: "No notifications yet", status: 404 });

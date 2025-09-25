@@ -17,8 +17,9 @@ import {
   deletePost,
   likeUnlike,
   repostToggle,
-} from "@/lib/api/userApi";
+} from "@/lib/api/postApi";
 import Link from "next/link";
+import { ImageCarousel } from "./ImageCarousel";
 
 type PostCardProps = { post: PostWithAllRelations };
 
@@ -93,7 +94,7 @@ function PostCard({ post }: PostCardProps) {
     },
   });
 
-  const { mutate: deletedPost } = useMutation({
+  const { mutate: deletedPost, isPending: isDeletingPost } = useMutation({
     mutationFn: (postId: string) => deletePost(postId),
     onSuccess: () => {
       toast.success("Post deleted successfully");
@@ -143,12 +144,12 @@ function PostCard({ post }: PostCardProps) {
       <CardTitle>
         <div>
           {/* Header */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+          <div className="flex gap-4 sm:items-center justify-between">
             <Link href={`/profile/${post.authorId}`}>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
                 <ImageBox src={post.author.image} size={40} />
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                  <h2 className="text-gray-300 text-base sm:text-lg font-medium">
+                  <h2 className="text-gray-300 text-base sm:text-lg font-normal">
                     {post.author.name}
                   </h2>
 
@@ -161,7 +162,10 @@ function PostCard({ post }: PostCardProps) {
             <div className="flex items-center gap-2 text-sm">
               <p className="text-gray-500">{postedDate} ago</p>
               {user?.id === post.authorId && (
-                <AlertBox onClick={handlePostDelete} />
+                <AlertBox
+                  onClick={handlePostDelete}
+                  isDeletingPost={isDeletingPost}
+                />
               )}
             </div>
           </div>
@@ -170,26 +174,27 @@ function PostCard({ post }: PostCardProps) {
           <CardContent className="pl-0 sm:pl-14 mt-3 sm:mt-4 text-sm sm:text-lg font-medium pb-4">
             {post.content}
           </CardContent>
+          {/* Post Image */}
+          {post.images.length > 0 && <ImageCarousel images={post.images} />}
         </div>
 
         {/* Actions */}
         <div className="w-full flex flex-wrap justify-start items-center gap-6 sm:gap-8">
-          {user && (
-            <Button
-              variant="ghost"
-              onClick={() => toggleLike()}
-              disabled={isLiked}
-              className="flex items-center gap-2"
-            >
-              <Heart
-                fill={liked ? "red" : "transparent"}
-                stroke={liked ? "red" : "white"}
-                strokeWidth={1}
-                className="size-5 sm:size-6"
-              />
-              <span className="text-sm sm:text-base">{post._count.likes}</span>
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            onClick={() => toggleLike()}
+            disabled={isLiked}
+            className="flex items-center gap-2"
+          >
+            <Heart
+              fill={liked ? "red" : "transparent"}
+              stroke={liked ? "red" : "white"}
+              strokeWidth={1}
+              className="size-5 sm:size-6"
+            />
+            <span className="text-sm sm:text-base">{post._count.likes}</span>
+          </Button>
+
           <Button
             variant="ghost"
             onClick={() => setShowComment((prev) => !prev)}
@@ -203,11 +208,12 @@ function PostCard({ post }: PostCardProps) {
             />
             <span className="text-sm sm:text-base">{post._count.comments}</span>
           </Button>
+
           <Button
             variant="ghost"
             className="flex items-center gap-2"
             onClick={() => toggleRepost()}
-            disabled={isReposting}
+            disabled={isReposting || (user && user.id === post.authorId)}
           >
             <RefreshCcw
               stroke={reposted ? "#14d270" : "white"}
@@ -229,11 +235,11 @@ function PostCard({ post }: PostCardProps) {
               <div>
                 {post.comments.map((comment) => (
                   <div className="mb-6 sm:mb-8" key={comment.id}>
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <div className="flex gap-3 sm:gap-4 items-center">
                       <ImageBox src={comment.author.image} size={32} />
-                      <div className="flex-1 flex gap-4 justify-between">
-                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-4">
-                          <h2 className="text-sm sm:text-base">
+                      <div className="flex-1 flex gap-4 justify-between ">
+                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 items-start sm:items-center">
+                          <h2 className="text-sm sm:text-base text-gray-300">
                             {comment.author.name}
                           </h2>
                           <p className="text-xs sm:text-sm text-gray-500">
@@ -253,7 +259,7 @@ function PostCard({ post }: PostCardProps) {
                         )}
                       </div>
                     </div>
-                    <div className="pl-0 sm:pl-12 mt-1 text-sm sm:text-base">
+                    <div className="pl-11 sm:pl-12 mt-1 text-sm sm:text-base font-semibold">
                       {comment.content}
                     </div>
                   </div>

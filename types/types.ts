@@ -57,7 +57,7 @@ const notificationQuery = {
       select: {
         id: true,
         content: true,
-        image: true,
+        images: true,
       },
     },
     comment: {
@@ -136,6 +136,7 @@ const suggesterUsersQuery = {
 export type POST = {
   authorId: string | undefined; //user.id = authorId
   content: string;
+  imageUrl?: string[];
 };
 
 export type LIKE = {
