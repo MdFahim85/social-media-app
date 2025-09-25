@@ -94,8 +94,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         />
 
         {/* Select Images Button */}
-        <Button variant={"secondary"} onClick={triggerFileInput}>
-          <Image />
+        <Button
+          variant={"secondary"}
+          onClick={triggerFileInput}
+          className="w-full sm:w-auto"
+        >
+          <Image /> Upload
         </Button>
 
         {/* File Previews */}

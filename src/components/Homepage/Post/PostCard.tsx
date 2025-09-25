@@ -144,12 +144,12 @@ function PostCard({ post }: PostCardProps) {
       <CardTitle>
         <div>
           {/* Header */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+          <div className="flex gap-4 sm:items-center justify-between">
             <Link href={`/profile/${post.authorId}`}>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
                 <ImageBox src={post.author.image} size={40} />
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                  <h2 className="text-gray-300 text-base sm:text-lg font-medium">
+                  <h2 className="text-gray-300 text-base sm:text-lg font-normal">
                     {post.author.name}
                   </h2>
 
@@ -208,23 +208,20 @@ function PostCard({ post }: PostCardProps) {
             />
             <span className="text-sm sm:text-base">{post._count.comments}</span>
           </Button>
-          {user && user.id !== post.authorId && (
-            <Button
-              variant="ghost"
-              className="flex items-center gap-2"
-              onClick={() => toggleRepost()}
-              disabled={isReposting}
-            >
-              <RefreshCcw
-                stroke={reposted ? "#14d270" : "white"}
-                strokeWidth={1}
-                className="size-5 sm:size-6"
-              />
-              <span className="text-sm sm:text-base">
-                {post._count.reposts}
-              </span>
-            </Button>
-          )}
+
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={() => toggleRepost()}
+            disabled={isReposting || (user && user.id === post.authorId)}
+          >
+            <RefreshCcw
+              stroke={reposted ? "#14d270" : "white"}
+              strokeWidth={1}
+              className="size-5 sm:size-6"
+            />
+            <span className="text-sm sm:text-base">{post._count.reposts}</span>
+          </Button>
         </div>
       </CardTitle>
 
@@ -238,11 +235,11 @@ function PostCard({ post }: PostCardProps) {
               <div>
                 {post.comments.map((comment) => (
                   <div className="mb-6 sm:mb-8" key={comment.id}>
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <div className="flex gap-3 sm:gap-4 items-center">
                       <ImageBox src={comment.author.image} size={32} />
-                      <div className="flex-1 flex gap-4 justify-between">
-                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-4">
-                          <h2 className="text-sm sm:text-base">
+                      <div className="flex-1 flex gap-4 justify-between ">
+                        <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 items-start sm:items-center">
+                          <h2 className="text-sm sm:text-base text-gray-300">
                             {comment.author.name}
                           </h2>
                           <p className="text-xs sm:text-sm text-gray-500">
@@ -262,7 +259,7 @@ function PostCard({ post }: PostCardProps) {
                         )}
                       </div>
                     </div>
-                    <div className="pl-0 sm:pl-12 mt-1 text-sm sm:text-base">
+                    <div className="pl-11 sm:pl-12 mt-1 text-sm sm:text-base font-semibold">
                       {comment.content}
                     </div>
                   </div>
