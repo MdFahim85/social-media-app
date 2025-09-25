@@ -7,7 +7,7 @@ function LoginButton({
   text,
   variant,
 }: {
-  text: string;
+  text: string | React.ReactNode;
   variant:
     | "link"
     | "default"

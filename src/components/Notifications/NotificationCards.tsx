@@ -28,7 +28,6 @@ function NotificationCards() {
     mutationFn: (userId: string) => readNotification(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
-      toast.success("Notifications updated");
     },
   });
 

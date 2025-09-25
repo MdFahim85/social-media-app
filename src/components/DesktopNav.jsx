@@ -2,9 +2,10 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { Bell, Home } from "lucide-react";
 import { auth } from "@/auth";
-import { LoginButton, LogoutButton } from "./SignIn";
+import { LogoutButton } from "./SignIn";
 import Image from "next/image";
 import NotificationCount from "./NotificationCount";
+import { Button } from "./ui/button";
 
 async function DesktopNav() {
   const session = await auth();
@@ -30,7 +31,9 @@ async function DesktopNav() {
         {!user ? (
           <>
             <li>
-              <LoginButton text={"Sign In"} />
+              <Button variant={"outline"}>
+                <Link href="/signup">Sign In</Link>
+              </Button>
             </li>
           </>
         ) : (

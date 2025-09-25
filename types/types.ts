@@ -6,12 +6,41 @@ export type RouteContext = {
 
 const postQuery = {
   include: {
-    author: { select: { name: true, image: true, email: true } },
-    comments: {
-      include: { author: { select: { id: true, name: true, image: true } } },
+    author: {
+      select: {
+        name: true,
+        image: true,
+        email: true,
+      },
     },
-    likes: { select: { authorId: true } },
-    _count: { select: { likes: true, comments: true } },
+    comments: {
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    },
+    likes: {
+      select: {
+        authorId: true,
+      },
+    },
+    reposts: {
+      select: {
+        authorId: true,
+      },
+    },
+    _count: {
+      select: {
+        likes: true,
+        comments: true,
+        reposts: true,
+      },
+    },
   },
 };
 
@@ -36,6 +65,55 @@ const notificationQuery = {
         id: true,
         content: true,
         createdAt: true,
+      },
+    },
+  },
+};
+
+const userQuery = {
+  select: {
+    id: true,
+    name: true,
+    email: true,
+    image: true,
+    createdAt: true,
+    followers: {
+      select: {
+        follower: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    following: {
+      select: {
+        following: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            _count: {
+              select: {
+                followers: true,
+              },
+            },
+          },
+        },
+      },
+    },
+    _count: {
+      select: {
+        followers: true,
+        following: true,
+        posts: true,
       },
     },
   },
@@ -70,6 +148,17 @@ export type COMMENT = {
   content: string;
 };
 
+export type FollowerType = {
+  follower: {
+    id: string;
+    name: string;
+    image: string;
+    _count: {
+      followers: number;
+    };
+  };
+};
+
 export type PostWithAllRelations = Prisma.PostGetPayload<typeof postQuery>;
 
 export type Notifications = Prisma.NotificationGetPayload<
@@ -77,3 +166,4 @@ export type Notifications = Prisma.NotificationGetPayload<
 >;
 
 export type SuggestedUser = Prisma.UserGetPayload<typeof suggesterUsersQuery>;
+export type User = Prisma.UserGetPayload<typeof userQuery>;

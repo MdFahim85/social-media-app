@@ -4,12 +4,10 @@ import { RouteContext } from "../../../../../types/types";
 
 export async function GET(req: NextRequest, context: RouteContext) {
   try {
-    // Await the params Promise
     const params = await context.params;
     const { id } = params;
 
-    // Execute all queries in parallel for better performance
-    const [user, posts, likedPosts] = await Promise.all([
+    const [user, posts, likedPosts, reposts] = await Promise.all([
       prisma.user.findUnique({
         where: { id },
         select: {
@@ -18,11 +16,44 @@ export async function GET(req: NextRequest, context: RouteContext) {
           email: true,
           image: true,
           createdAt: true,
+          followers: {
+            select: {
+              follower: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  _count: {
+                    select: {
+                      followers: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          following: {
+            select: {
+              following: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  _count: {
+                    select: {
+                      followers: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           _count: {
             select: {
               followers: true,
               following: true,
               posts: true,
+              reposts: true,
             },
           },
         },
@@ -60,10 +91,16 @@ export async function GET(req: NextRequest, context: RouteContext) {
               authorId: true,
             },
           },
+          reposts: {
+            select: {
+              authorId: true,
+            },
+          },
           _count: {
             select: {
               likes: true,
               comments: true,
+              reposts: true,
             },
           },
         },
@@ -108,10 +145,63 @@ export async function GET(req: NextRequest, context: RouteContext) {
               authorId: true,
             },
           },
+          reposts: {
+            select: {
+              authorId: true,
+            },
+          },
           _count: {
             select: {
               likes: true,
               comments: true,
+              reposts: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.repost.findMany({
+        where: {
+          authorId: id,
+        },
+        include: {
+          post: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+              comments: {
+                include: {
+                  author: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                      image: true,
+                    },
+                  },
+                },
+                orderBy: {
+                  createdAt: "desc",
+                },
+              },
+              likes: {
+                select: {
+                  authorId: true,
+                },
+              },
+              _count: {
+                select: {
+                  likes: true,
+                  comments: true,
+                },
+              },
             },
           },
         },
@@ -121,7 +211,6 @@ export async function GET(req: NextRequest, context: RouteContext) {
       }),
     ]);
 
-    // Check if user exists (posts and likedPosts can be empty arrays)
     if (!user) {
       return NextResponse.json(
         {
@@ -137,6 +226,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
       user,
       posts: posts || [],
       likedPosts: likedPosts || [],
+      reposts: reposts || [],
     });
   } catch (error) {
     console.error("Error fetching profile data:", error);
