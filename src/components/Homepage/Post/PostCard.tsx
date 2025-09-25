@@ -180,22 +180,21 @@ function PostCard({ post }: PostCardProps) {
 
         {/* Actions */}
         <div className="w-full flex flex-wrap justify-start items-center gap-6 sm:gap-8">
-          {user && (
-            <Button
-              variant="ghost"
-              onClick={() => toggleLike()}
-              disabled={isLiked}
-              className="flex items-center gap-2"
-            >
-              <Heart
-                fill={liked ? "red" : "transparent"}
-                stroke={liked ? "red" : "white"}
-                strokeWidth={1}
-                className="size-5 sm:size-6"
-              />
-              <span className="text-sm sm:text-base">{post._count.likes}</span>
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            onClick={() => toggleLike()}
+            disabled={isLiked}
+            className="flex items-center gap-2"
+          >
+            <Heart
+              fill={liked ? "red" : "transparent"}
+              stroke={liked ? "red" : "white"}
+              strokeWidth={1}
+              className="size-5 sm:size-6"
+            />
+            <span className="text-sm sm:text-base">{post._count.likes}</span>
+          </Button>
+
           <Button
             variant="ghost"
             onClick={() => setShowComment((prev) => !prev)}
@@ -209,19 +208,23 @@ function PostCard({ post }: PostCardProps) {
             />
             <span className="text-sm sm:text-base">{post._count.comments}</span>
           </Button>
-          <Button
-            variant="ghost"
-            className="flex items-center gap-2"
-            onClick={() => toggleRepost()}
-            disabled={isReposting}
-          >
-            <RefreshCcw
-              stroke={reposted ? "#14d270" : "white"}
-              strokeWidth={1}
-              className="size-5 sm:size-6"
-            />
-            <span className="text-sm sm:text-base">{post._count.reposts}</span>
-          </Button>
+          {user && user.id !== post.authorId && (
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2"
+              onClick={() => toggleRepost()}
+              disabled={isReposting}
+            >
+              <RefreshCcw
+                stroke={reposted ? "#14d270" : "white"}
+                strokeWidth={1}
+                className="size-5 sm:size-6"
+              />
+              <span className="text-sm sm:text-base">
+                {post._count.reposts}
+              </span>
+            </Button>
+          )}
         </div>
       </CardTitle>
 

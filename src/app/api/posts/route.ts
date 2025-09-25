@@ -108,7 +108,6 @@ export async function DELETE(req: NextRequest) {
         const folder = parts.slice(parts.indexOf("upload") + 2).join("/");
         const publicId = `${folder}/${fileWithExt.split(".")[0]}`;
         const res = await cloudinary.uploader.destroy(publicId);
-        console.log(parts, fileWithExt, folder, publicId, res);
       }
     } catch (error) {
       return NextResponse.json({

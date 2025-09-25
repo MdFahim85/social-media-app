@@ -57,7 +57,7 @@ const notificationQuery = {
       select: {
         id: true,
         content: true,
-        image: true,
+        images: true,
       },
     },
     comment: {
