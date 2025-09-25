@@ -34,19 +34,39 @@ export const getPosts = async () => {
   }
 };
 
-export async function addPost(post: POST) {
-  try {
-    const res = await API.post("/posts", post);
-    return res;
-  } catch (error) {
-    console.log(error);
+export const uploadImages = async (formData: FormData) => {
+  const res = await API.post("/upload", formData);
+  if (
+    res.data.status === 401 ||
+    res.data.status === 400 ||
+    res.data.status === 500
+  ) {
+    const error = res.data;
+    throw new Error(error.message);
   }
+  return res;
+};
+
+export async function addPost(post: POST) {
+  const res = await API.post("/posts", post);
+  if (
+    res.data.status === 401 ||
+    res.data.status === 400 ||
+    res.data.status === 500
+  ) {
+    const error = res.data;
+    throw new Error(error.message);
+  }
+  return res;
 }
 
 export async function deletePost(id: string) {
   const res = await API.delete("/posts", { data: { id } });
-  console.log(res);
-  if (res.data.status == 401 || res.data.status == 404) {
+  if (
+    res.data.status == 401 ||
+    res.data.status == 404 ||
+    res.data.status == 500
+  ) {
     const error = res.data;
     throw new Error(error.message);
   }

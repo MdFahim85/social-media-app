@@ -5,7 +5,7 @@ import {
   deleteNotification,
   getNotifications,
   readNotification,
-} from "@/lib/api/userApi";
+} from "@/lib/api/postApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Notifications } from "../../../types/types";
 import { ScrollArea } from "@/components/ui/scroll-area";

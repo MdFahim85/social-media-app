@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Postbox from "./Post/Postbox";
 import PostCard from "@/components/Homepage/Post/PostCard";
 import { PostWithAllRelations } from "../../../types/types";
-import { getPosts } from "@/lib/api/userApi";
+import { getPosts } from "@/lib/api/postApi";
 import PostSkeleton from "./Post/PostSkeleton";
 import ErrorCard from "../ErrorCard";
 

@@ -3,33 +3,57 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageIcon, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ImageBox from "@/components/ImageBox";
-import { addPost } from "@/lib/api/userApi";
+import { addPost, uploadImages } from "@/lib/api/postApi";
+import ImageUploader from "./ImageUploader";
 
 function Postbox() {
   const { data: session } = useSession();
   const user = session?.user;
   const queryClient = useQueryClient();
 
+  const [submitted, setSubmitted] = useState(false);
+
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: (formData: FormData) => uploadImages(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      setSubmitted(true);
+    },
+    onError: () => {
+      toast.error("Error uploading images");
+    },
+  });
+
   const { mutate, isPending: isPosting } = useMutation({
-    mutationFn: (content: string) => addPost({ authorId: user?.id, content }),
+    mutationFn: ({
+      content,
+      imageUrl,
+    }: {
+      content: string;
+      imageUrl: string[];
+    }) => addPost({ authorId: user?.id, content, imageUrl }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       toast.success("New post added");
       setContent("");
+      setSubmitted(false);
+      formData.delete("files");
     },
     onError: () => {
       toast.error("Something went wrong");
     },
   });
-
   const [content, setContent] = useState("");
 
-  const handleSubmit = () => {
+  const [formData] = useState(new FormData());
+
+  const handleSubmit = async () => {
+    let imageUrl: string[] = [];
     if (!user) {
       toast.error("Log In to post content");
       return;
@@ -38,7 +62,11 @@ function Postbox() {
       toast.error("Post Cannot be Empty");
       return;
     }
-    mutate(content);
+    if (formData.getAll("files")) {
+      const imageData = await mutateAsync(formData);
+      imageUrl = imageData?.data.imageUrls;
+    }
+    mutate({ content, imageUrl });
   };
 
   if (!user) {
@@ -65,13 +93,11 @@ function Postbox() {
       </CardContent>
       <CardFooter>
         <div className="flex flex-col sm:flex-row w-full justify-between gap-3 sm:gap-0 ps-0 sm:ps-14">
-          <Button variant={"secondary"} className="w-full sm:w-auto">
-            <ImageIcon className="w-4 h-4 md:w-5 md:h-5" />
-          </Button>
+          <ImageUploader formData={formData} submitted={submitted} />
           <Button
             variant={"secondary"}
             onClick={handleSubmit}
-            disabled={isPosting}
+            disabled={isPosting || isPending}
             className="w-full sm:w-auto flex items-center gap-2"
           >
             <Send className="w-4 h-4 md:w-5 md:h-5" />

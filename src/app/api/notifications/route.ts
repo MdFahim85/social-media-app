@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         select: {
           id: true,
           content: true,
-          image: true,
+          images: true,
         },
       },
       comment: {

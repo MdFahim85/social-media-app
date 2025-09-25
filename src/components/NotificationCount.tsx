@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getNotifications } from "@/lib/api/userApi";
+import { getNotifications } from "@/lib/api/postApi";
 import { Badge } from "./ui/badge";
 import { Notifications } from "../../types/types";
 

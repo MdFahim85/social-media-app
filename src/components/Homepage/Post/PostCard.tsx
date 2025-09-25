@@ -17,8 +17,9 @@ import {
   deletePost,
   likeUnlike,
   repostToggle,
-} from "@/lib/api/userApi";
+} from "@/lib/api/postApi";
 import Link from "next/link";
+import { ImageCarousel } from "./ImageCarousel";
 
 type PostCardProps = { post: PostWithAllRelations };
 
@@ -93,7 +94,7 @@ function PostCard({ post }: PostCardProps) {
     },
   });
 
-  const { mutate: deletedPost } = useMutation({
+  const { mutate: deletedPost, isPending: isDeletingPost } = useMutation({
     mutationFn: (postId: string) => deletePost(postId),
     onSuccess: () => {
       toast.success("Post deleted successfully");
@@ -161,7 +162,10 @@ function PostCard({ post }: PostCardProps) {
             <div className="flex items-center gap-2 text-sm">
               <p className="text-gray-500">{postedDate} ago</p>
               {user?.id === post.authorId && (
-                <AlertBox onClick={handlePostDelete} />
+                <AlertBox
+                  onClick={handlePostDelete}
+                  isDeletingPost={isDeletingPost}
+                />
               )}
             </div>
           </div>
@@ -170,6 +174,8 @@ function PostCard({ post }: PostCardProps) {
           <CardContent className="pl-0 sm:pl-14 mt-3 sm:mt-4 text-sm sm:text-lg font-medium pb-4">
             {post.content}
           </CardContent>
+          {/* Post Image */}
+          {post.images.length > 0 && <ImageCarousel images={post.images} />}
         </div>
 
         {/* Actions */}

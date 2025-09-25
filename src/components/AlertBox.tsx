@@ -12,7 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 
-function AlertBox({ onClick }: { onClick: React.MouseEventHandler }) {
+function AlertBox({
+  onClick,
+  isDeletingPost,
+}: {
+  onClick: React.MouseEventHandler;
+  isDeletingPost?: boolean;
+}) {
   return (
     <div className="z-10">
       <AlertDialog>
@@ -20,6 +26,7 @@ function AlertBox({ onClick }: { onClick: React.MouseEventHandler }) {
           <Button
             variant={"secondary"}
             className="p-2 sm:p-3 flex items-center justify-center"
+            disabled={isDeletingPost}
           >
             <Trash className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
           </Button>

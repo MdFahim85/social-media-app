@@ -136,6 +136,7 @@ const suggesterUsersQuery = {
 export type POST = {
   authorId: string | undefined; //user.id = authorId
   content: string;
+  imageUrl?: string[];
 };
 
 export type LIKE = {
