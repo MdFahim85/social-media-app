@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const files = formData.getAll("files") as File[];
 
     if (!files.length) {
-      return NextResponse.json({ message: "Files are required", status: 400 });
+      return NextResponse.json({ imageUrls: [] });
     }
 
     const uploadPromises = files.map(async (file) => {

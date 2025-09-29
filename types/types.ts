@@ -133,6 +133,14 @@ const suggesterUsersQuery = {
   },
 };
 
+export type USER = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  image: File | null;
+};
+
 export type POST = {
   authorId: string | undefined; //user.id = authorId
   content: string;

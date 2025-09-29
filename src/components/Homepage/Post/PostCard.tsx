@@ -69,6 +69,7 @@ function PostCard({ post }: PostCardProps) {
       queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
       queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
       setLiked((prev) => !prev);
     },
     onError: (error) => {
@@ -88,6 +89,7 @@ function PostCard({ post }: PostCardProps) {
         queryKey: ["fetchNotifications"],
       });
       queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -100,6 +102,7 @@ function PostCard({ post }: PostCardProps) {
       toast.success("Post deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -113,6 +116,7 @@ function PostCard({ post }: PostCardProps) {
       toast.success("Comment deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -132,6 +136,10 @@ function PostCard({ post }: PostCardProps) {
   }
 
   function handleComment() {
+    if (!content) {
+      toast.error("Write a comment");
+      return;
+    }
     commentAdd(content);
   }
 
@@ -183,7 +191,7 @@ function PostCard({ post }: PostCardProps) {
           <Button
             variant="ghost"
             onClick={() => toggleLike()}
-            disabled={isLiked}
+            disabled={isLiked || !session}
             className="flex items-center gap-2"
           >
             <Heart
@@ -199,6 +207,7 @@ function PostCard({ post }: PostCardProps) {
             variant="ghost"
             onClick={() => setShowComment((prev) => !prev)}
             className="flex items-center gap-2"
+            disabled={post._count.comments === 0 && !session}
           >
             <MessageCircle
               fill={showComment ? "#0097f5" : "transparent"}
@@ -213,7 +222,9 @@ function PostCard({ post }: PostCardProps) {
             variant="ghost"
             className="flex items-center gap-2"
             onClick={() => toggleRepost()}
-            disabled={isReposting || (user && user.id === post.authorId)}
+            disabled={
+              isReposting || (user && user.id === post.authorId) || !session
+            }
           >
             <RefreshCcw
               stroke={reposted ? "#14d270" : "white"}

@@ -24,8 +24,8 @@ function Postbox() {
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       setSubmitted(true);
     },
-    onError: () => {
-      toast.error("Error uploading images");
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 

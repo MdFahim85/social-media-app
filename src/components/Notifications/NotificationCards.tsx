@@ -12,9 +12,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import ImageBox from "@/components/ImageBox";
 import { Heart, MessageCircle, UserRoundPlus } from "lucide-react";
-import toast from "react-hot-toast";
 import { formatDistanceToNow } from "date-fns";
 import NotificationSkeleton from "./NotificationSkeleton";
+import Link from "next/link";
 
 function NotificationCards() {
   const queryClient = useQueryClient();
@@ -109,34 +109,38 @@ function NotificationCards() {
                     </div>
                     {notification.type === "COMMENT" ||
                     notification.type === "LIKE" ? (
-                      <div className="w-full">
-                        <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
-                          {notification.type == "LIKE" ? (
-                            <Heart className="shrink-0" />
-                          ) : (
-                            <MessageCircle className="shrink-0" />
-                          )}
-                          <span className="font-medium">
-                            {notification.creator.name}
-                          </span>{" "}
-                          has{" "}
-                          {notification.type == "LIKE" ? "liked" : "commented"}{" "}
-                          on your post{" "}
-                          {notification.comment
-                            ? `"${notification.comment.content}"`
-                            : ""}
-                        </div>
+                      <Link href={`/post/${notification.postId as string}`}>
+                        <div className="w-full">
+                          <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
+                            {notification.type == "LIKE" ? (
+                              <Heart className="shrink-0" />
+                            ) : (
+                              <MessageCircle className="shrink-0" />
+                            )}
+                            <span className="font-medium">
+                              {notification.creator.name}
+                            </span>{" "}
+                            has{" "}
+                            {notification.type == "LIKE"
+                              ? "liked"
+                              : "commented"}{" "}
+                            on your post{" "}
+                            {notification.comment
+                              ? `"${notification.comment.content}"`
+                              : ""}
+                          </div>
 
-                        <p className="ms-8 pt-2 text-xs sm:text-sm text-zinc-400">
-                          {formatDistanceToNow(
-                            new Date(notification.createdAt)
-                          )}{" "}
-                          ago
-                        </p>
-                        <div className="m-2 sm:m-4 p-3 sm:p-4 bg-gray-100 dark:bg-neutral-800 rounded-md text-sm sm:text-base break-words">
-                          {notification.post?.content}
+                          <p className="ms-8 pt-2 text-xs sm:text-sm text-zinc-400">
+                            {formatDistanceToNow(
+                              new Date(notification.createdAt)
+                            )}{" "}
+                            ago
+                          </p>
+                          <div className="m-2 sm:m-4 p-3 sm:p-4 bg-gray-100 dark:bg-neutral-800 rounded-md text-sm sm:text-base break-words">
+                            {notification.post?.content}
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     ) : notification.type === "ID" ? (
                       <div className="mt-2 flex items-center gap-2 text-sm sm:text-base">
                         <UserRoundPlus className="shrink-0" />
@@ -147,14 +151,16 @@ function NotificationCards() {
                       </div>
                     ) : (
                       <div className="mt-2 flex items-center gap-2 text-sm sm:text-base">
-                        <UserRoundPlus className="shrink-0" />
-                        <span className="font-medium">
-                          {notification.creator.name}
-                        </span>{" "}
-                        has reposted your post{" "}
-                        <span className="font-bold">
-                          {notification.post?.content}
-                        </span>
+                        <Link href={`/post/${notification.postId as string}`}>
+                          <UserRoundPlus className="shrink-0" />
+                          <span className="font-medium">
+                            {notification.creator.name}
+                          </span>{" "}
+                          has reposted your post{" "}
+                          <span className="font-bold">
+                            {notification.post?.content}
+                          </span>
+                        </Link>
                       </div>
                     )}
                   </div>
