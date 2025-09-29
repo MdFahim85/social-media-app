@@ -44,8 +44,6 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  console.log(notifications);
-
   if (!notifications.length) {
     return NextResponse.json({ message: "No notifications yet", status: 404 });
   }

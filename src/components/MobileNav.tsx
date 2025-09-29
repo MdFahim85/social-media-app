@@ -10,8 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { LoginButton, LogoutButton } from "./SignIn";
+import { LogoutButton } from "./SignInButtons";
 import ImageBox from "./ImageBox";
+import { Button } from "./ui/button";
 
 async function MobileNav() {
   const session = await auth();
@@ -52,7 +53,9 @@ async function MobileNav() {
             {!user ? (
               <li className="mt-4">
                 <div className="p-3">
-                  <LoginButton variant={"secondary"} text={"Sign In"} />
+                  <Button variant={"outline"}>
+                    <Link href="/signin">Sign In</Link>
+                  </Button>
                 </div>
               </li>
             ) : (

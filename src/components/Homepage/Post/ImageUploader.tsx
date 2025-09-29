@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, use } from "react";
+import { useState, useRef, useEffect } from "react";
 import { X, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -73,7 +73,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const triggerFileInput = () => fileInputRef.current?.click();
 
   useEffect(() => {
-    console.log(submitted);
     if (submitted) {
       setFiles([]);
       setPreviews([]);
@@ -81,7 +80,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   }, [submitted]);
 
   return (
-    <div className="w-full ml-0 sm:ml-14">
+    <div className="w-full ml-0">
       <div className="space-y-4">
         {/* File Input */}
         <input

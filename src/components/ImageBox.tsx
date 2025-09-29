@@ -9,7 +9,7 @@ function ImageBox({
 }) {
   return (
     <Image
-      src={src || "avatar"}
+      src={src || "/avatar.png"}
       alt="Avatar"
       width={size}
       height={size}

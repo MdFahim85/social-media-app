@@ -34,6 +34,15 @@ export const getPosts = async () => {
   }
 };
 
+export const getSinglePost = async (id: string) => {
+  const res = await API.get(`/posts/${id}`);
+  if (res.data.status === 404) {
+    const error = res.data;
+    throw new Error(error.message);
+  }
+  return res.data;
+};
+
 export const uploadImages = async (formData: FormData) => {
   const res = await API.post("/upload", formData);
   if (

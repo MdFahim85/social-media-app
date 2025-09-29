@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { Bell, Home } from "lucide-react";
 import { auth } from "@/auth";
-import { LogoutButton } from "./SignIn";
+import { LogoutButton } from "./SignInButtons";
 import Image from "next/image";
 import NotificationCount from "./NotificationCount";
 import { Button } from "./ui/button";
@@ -32,7 +32,7 @@ async function DesktopNav() {
           <>
             <li>
               <Button variant={"outline"}>
-                <Link href="/signup">Sign In</Link>
+                <Link href="/signin">Sign In</Link>
               </Button>
             </li>
           </>
@@ -41,7 +41,7 @@ async function DesktopNav() {
             <li>
               <Link href={`/profile/${user.id}`}>
                 <Image
-                  src={user.image}
+                  src={user.image || "/avatar.png"}
                   alt="UserAvatar"
                   width={40}
                   height={40}
