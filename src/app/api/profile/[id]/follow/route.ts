@@ -31,7 +31,6 @@ export async function GET(req: NextRequest, context: RouteContext) {
 }
 
 export async function POST(req: NextRequest, context: RouteContext) {
-  // Await the params Promise
   const params = await context.params;
   const { id } = params;
 
@@ -45,7 +44,6 @@ export async function POST(req: NextRequest, context: RouteContext) {
 
   const userId = token.sub;
 
-  // Fixed logic: user should NOT be able to follow themselves
   if (userId === id) {
     return NextResponse.json({
       message: "You cannot follow yourself",

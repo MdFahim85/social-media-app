@@ -97,7 +97,7 @@ function Postbox() {
           <Button
             variant={"secondary"}
             onClick={handleSubmit}
-            disabled={isPosting || isPending}
+            disabled={isPosting || isPending || !content}
             className="w-full sm:w-auto flex items-center gap-2"
           >
             <Send className="w-4 h-4 md:w-5 md:h-5" />
