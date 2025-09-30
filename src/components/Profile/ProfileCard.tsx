@@ -6,7 +6,7 @@ import {
   getProfileInfo,
 } from "@/lib/api/profileApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -25,6 +25,9 @@ import ErrorCard from "../ErrorCard";
 import Modal from "../Modal";
 import { useEffect, useState } from "react";
 import { FollowerType } from "../../../types/types";
+import { Cake, Edit, MapPin } from "lucide-react";
+import Image from "next/image";
+import { format } from "date-fns";
 
 function ProfileCard() {
   const params = useParams();
@@ -95,23 +98,68 @@ function ProfileCard() {
   }
 
   const { likedPosts, posts, user, reposts } = userData;
-  console.log(reposts);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
       <div className="md:col-span-4">
         <div className="mb-6 w-full flex justify-center">
-          <Card className="w-full text-sm">
-            <CardHeader>
+          <Card className="w-full text-sm p-0">
+            <CardHeader className="px-0">
               <CardTitle>
-                <div className="w-full flex justify-center">
-                  <ImageBox src={user.image} size={80} />
+                <div className="w-full flex justify-center relative">
+                  <Image
+                    src={
+                      user.banner ||
+                      "https://plus.unsplash.com/premium_photo-1672201106204-58e9af7a2888?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    }
+                    alt="profile"
+                    fill
+                    objectFit="cover"
+                    className="rounded-t-lg"
+                  />
+                  <div className="p-8 z-40">
+                    <ImageBox src={user.image} size={80} />
+                  </div>
+                  <Button
+                    variant={"ghost"}
+                    className="hover:cursor-pointer absolute right-0 top-0 m-4"
+                    onClick={() => redirect(`/profile/${user.id}/update`)}
+                  >
+                    <Edit />
+                  </Button>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 flex items-center flex-col text-center">
-              <div className="font-semibold">{user.name}</div>
-              <div className="break-words">{user.email}</div>
+              <div className="text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold  mb-2">
+                  {user.name}
+                </h1>
+
+                {/* Bio */}
+                {user.bio && (
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-4 max-w-2xl">
+                    {user.bio}
+                  </p>
+                )}
+
+                {/* Meta Information */}
+                <div className="flex flex-wrap gap-4 justify-center text-sm text-gray-500">
+                  {user.location && (
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4" />
+                      <span>{user.location}</span>
+                    </div>
+                  )}
+
+                  {user.birthday && (
+                    <div className="flex items-center gap-1.5">
+                      <Cake className="w-4 h-4" />
+                      <span>{format(user.birthday, "PPP")}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </CardContent>
             <CardContent className="flex justify-between gap-2 text-gray-100 font-medium mt-4">
               <Modal user={user} type="followers" />
@@ -124,7 +172,7 @@ function ProfileCard() {
             <CardFooter>
               {user.id !== currentUser?.id && (
                 <Button
-                  className="w-full"
+                  className="w-full  mb-4"
                   onClick={() => handleFollow(user.id)}
                   disabled={isFollowingUser}
                 >

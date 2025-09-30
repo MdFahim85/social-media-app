@@ -293,7 +293,7 @@ function PostCard({ post }: PostCardProps) {
                     <Button
                       variant="secondary"
                       onClick={() => handleComment()}
-                      disabled={isCommenting}
+                      disabled={isCommenting || !content}
                       className="flex items-center gap-2 w-full sm:w-auto"
                     >
                       <Send className="w-4 h-4 sm:w-5 sm:h-5" />

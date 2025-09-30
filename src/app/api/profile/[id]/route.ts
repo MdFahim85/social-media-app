@@ -1,6 +1,9 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { RouteContext } from "../../../../../types/types";
+import { getToken } from "next-auth/jwt";
+import cloudinary from "@/lib/cloudinary";
+import streamifier from "streamifier";
 
 export async function GET(req: NextRequest, context: RouteContext) {
   try {
@@ -15,6 +18,10 @@ export async function GET(req: NextRequest, context: RouteContext) {
           name: true,
           email: true,
           image: true,
+          bio: true,
+          location: true,
+          banner: true,
+          birthday: true,
           createdAt: true,
           followers: {
             select: {
@@ -229,7 +236,6 @@ export async function GET(req: NextRequest, context: RouteContext) {
       reposts: reposts || [],
     });
   } catch (error) {
-    console.error("Error fetching profile data:", error);
     return NextResponse.json(
       {
         message: "Internal server error",
@@ -238,4 +244,108 @@ export async function GET(req: NextRequest, context: RouteContext) {
       { status: 500 }
     );
   }
+}
+
+export async function PUT(req: NextRequest) {
+  // Check authorization
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  if (!token) {
+    return NextResponse.json({
+      message: "Sign in to perform this action",
+      status: 401,
+    });
+  }
+  const id = token.sub;
+
+  const formData = await req.formData();
+  const name = formData.get("name") as string;
+  const imageFile = formData.get("image") as File;
+  const bio = formData.get("bio") as string;
+  const location = formData.get("location") as string;
+  const bannerFile = formData.get("banner") as File;
+  const birthday = formData.get("birthday") as Date | null;
+  let image = "";
+  let banner = "";
+
+  // Get user
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  // No user
+
+  if (!user) {
+    return NextResponse.json({ message: "User not found", status: 404 });
+  }
+  // Upload image
+  if (imageFile) {
+    const uploadPromise = async (image: File) => {
+      const buffer = Buffer.from(await image.arrayBuffer());
+      return new Promise<string>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "socialMediaApp",
+            resource_type: "auto",
+          },
+          (err, result) => {
+            if (err) reject(err);
+            else resolve(result?.secure_url || "");
+          }
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+      });
+    };
+    image = await uploadPromise(imageFile);
+  }
+
+  // Upload Banner
+  if (bannerFile) {
+    const uploadPromise = async (image: File) => {
+      const buffer = Buffer.from(await image.arrayBuffer());
+      return new Promise<string>((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "socialMediaApp",
+            resource_type: "auto",
+          },
+          (err, result) => {
+            if (err) reject(err);
+            else resolve(result?.secure_url || "");
+          }
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+      });
+    };
+    banner = await uploadPromise(bannerFile);
+  }
+
+  // Update user
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: {
+      ...(name && { name }),
+      ...(image && { image }),
+      ...(bio && { bio }),
+      ...(banner && { banner }),
+      ...(location && { location }),
+      ...(birthday && { birthday }),
+    },
+  });
+
+  // If unsuccessful
+
+  if (!updatedUser) {
+    return NextResponse.json({
+      message: "There was an error while updating user data",
+      status: 500,
+    });
+  }
+
+  // On success
+
+  return NextResponse.json({
+    message: "User details updated successfully",
+    status: 200,
+    updatedUser,
+  });
 }
