@@ -94,7 +94,6 @@ export async function addComment(comment: COMMENT) {
 
 export async function deleteComment(id: string) {
   const res = await API.delete("/posts/comments", { data: { id } });
-  console.log(res);
   if (res.data.status == 401 || res.data.status == 404) {
     const error = res.data;
     throw new Error(error.message);

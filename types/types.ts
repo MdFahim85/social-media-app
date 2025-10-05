@@ -14,12 +14,24 @@ const postQuery = {
       },
     },
     comments: {
+      where: { parentId: null },
       include: {
         author: {
           select: {
             id: true,
             name: true,
             image: true,
+          },
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
           },
         },
       },

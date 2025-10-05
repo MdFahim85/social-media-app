@@ -20,6 +20,7 @@ import {
 } from "@/lib/api/postApi";
 import Link from "next/link";
 import { ImageCarousel } from "./ImageCarousel";
+import { error } from "console";
 
 type PostCardProps = { post: PostWithAllRelations };
 
@@ -43,25 +44,6 @@ function PostCard({ post }: PostCardProps) {
   const [commented, setCommented] = useState(
     post.comments.some((comment) => comment.authorId === user?.id)
   );
-
-  const { mutate: commentAdd, isPending: isCommenting } = useMutation({
-    mutationFn: (content: string) => addComment({ content, postId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["fetchPosts"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["fetchNotifications"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
-      toast.success("Comment added");
-      setCommented((prev) => !prev);
-      setContent("");
-    },
-    onError: () => {
-      toast.error("Something went wrong");
-    },
-  });
 
   const { mutate, isPending: isLiked } = useMutation({
     mutationFn: (postId: string) => likeUnlike({ authorId: user?.id, postId }),
@@ -106,6 +88,24 @@ function PostCard({ post }: PostCardProps) {
     },
     onError: (error) => {
       toast.error(error.message);
+    },
+  });
+
+  const { mutate: commentAdd, isPending: isCommenting } = useMutation({
+    mutationFn: (content: string) => addComment({ content, postId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchPosts"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchNotifications"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      setCommented((prev) => !prev);
+      setContent("");
+    },
+    onError: () => {
+      toast.error("Something went wrong");
     },
   });
 
@@ -272,6 +272,38 @@ function PostCard({ post }: PostCardProps) {
                     </div>
                     <div className="pl-11 sm:pl-12 mt-1 text-sm sm:text-base font-semibold">
                       {comment.content}
+                    </div>
+                    {/* Comment Likes */}
+
+                    <div className="pl-7 sm:pl-8 mt-1 text-sm sm:text-base font-semibold flex gap-2">
+                      <Button
+                        variant="ghost"
+                        className="flex items-center gap-2 "
+                      >
+                        <Heart
+                          fill={"transparent"}
+                          stroke={"white"}
+                          strokeWidth={1}
+                          className="size-3  sm:size-4"
+                        />
+                        <span className="text-xs sm:text-sm">
+                          {comment.likes}
+                        </span>
+                      </Button>
+                      <Button variant="ghost" className="text-sm ">
+                        Reply
+                      </Button>
+                    </div>
+
+                    {/* Comment Replies */}
+                    <div className="pl-7 sm:pl-8 mt-1 text-sm sm:text-base font-semibold">
+                      {comment.replies.length ? (
+                        <Button variant="ghost">
+                          View {comment.replies.length} replies
+                        </Button>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   </div>
                 ))}
