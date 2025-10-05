@@ -18,6 +18,7 @@ import {
 import { differenceInYears, format } from "date-fns";
 import { Calendar } from "../ui/calendar";
 import { redirect } from "next/navigation";
+import UpdateUserSkeleton from "./UpdateUserSkeleton";
 
 type PreviewItem = {
   file: File;
@@ -69,7 +70,7 @@ function UpdateCard() {
   });
 
   if (isLoading) {
-    return <div>Loading</div>;
+    return <UpdateUserSkeleton />;
   }
 
   const { user } = userDetails?.data;

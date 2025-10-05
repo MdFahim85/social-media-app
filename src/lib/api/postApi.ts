@@ -25,9 +25,9 @@ export async function repostToggle({
   return res.data;
 }
 
-export const getPosts = async () => {
+export const getPosts = async ({ pageParam }: { pageParam: number | null }) => {
   try {
-    const res = await API.get("/posts");
+    const res = await API.get("/posts?cursor=" + pageParam);
     return res.data;
   } catch (error) {
     console.log("error fetching posts");
