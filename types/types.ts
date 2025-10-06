@@ -34,6 +34,16 @@ const postQuery = {
             },
           },
         },
+        commentLike: {
+          select: {
+            authorId: true,
+          },
+        },
+        _count: {
+          select: {
+            commentLike: true,
+          },
+        },
       },
     },
     likes: {
@@ -46,6 +56,7 @@ const postQuery = {
         authorId: true,
       },
     },
+
     _count: {
       select: {
         likes: true,
@@ -164,9 +175,20 @@ export type LIKE = {
   postId: string;
 };
 
+export type LIKECOMMENT = {
+  authorId: string | undefined; //user.id = authorId
+  commentId: string;
+};
+
 export type COMMENT = {
   postId: string;
   content: string;
+};
+
+export type REPLY = {
+  postId: string;
+  replyContent: string;
+  parentId: string;
 };
 
 export type FollowerType = {

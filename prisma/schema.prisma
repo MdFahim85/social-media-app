@@ -27,6 +27,7 @@ model User {
   reposts Repost[]
   comments Comment[]
   likes Like[]
+  commentLike CommentLike[]
   followers Follows[] @relation("following")
   following Follows[] @relation("followers")
   notifications Notification[] @relation("userNotifications")
@@ -105,8 +106,8 @@ model Comment {
   authorId String
   parentId String?
   postId String
-  likes Int @default(0)
   notifications Notification[]
+  commentLike CommentLike[]
 
   createdAt DateTime @default(now())
 
@@ -120,6 +121,20 @@ model Comment {
 
   @@index([authorId,postId])
 }
+
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  authorId  String
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+
+  @@unique([commentId, authorId])
+}
+
 
 model Like{
   id String  @id @default(cuid())

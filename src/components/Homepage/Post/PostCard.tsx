@@ -13,14 +13,15 @@ import AlertBox from "@/components/AlertBox";
 import { Textarea } from "@/components/ui/textarea";
 import {
   addComment,
+  addReply,
   deleteComment,
   deletePost,
   likeUnlike,
   repostToggle,
+  toggleLikeComment,
 } from "@/lib/api/postApi";
 import Link from "next/link";
 import { ImageCarousel } from "./ImageCarousel";
-import { error } from "console";
 
 type PostCardProps = { post: PostWithAllRelations };
 
@@ -35,6 +36,12 @@ function PostCard({ post }: PostCardProps) {
     post.likes.some((like) => like.authorId == user?.id)
   );
 
+  const [commentLiked, setCommentLiked] = useState(
+    post.comments.some((comment) =>
+      comment.commentLike.some((comLike) => comLike.authorId === user?.id)
+    )
+  );
+
   const [reposted, setReposted] = useState(
     post.reposts.some((repost) => repost.authorId === user?.id)
   );
@@ -45,6 +52,10 @@ function PostCard({ post }: PostCardProps) {
     post.comments.some((comment) => comment.authorId === user?.id)
   );
 
+  const [replyContent, setReplyContent] = useState("");
+  const [replyBoxShow, setReplyBoxShow] = useState(false);
+  const [viewReply, setViewReply] = useState(false);
+
   const { mutate, isPending: isLiked } = useMutation({
     mutationFn: (postId: string) => likeUnlike({ authorId: user?.id, postId }),
     onSuccess: () => {
@@ -53,6 +64,21 @@ function PostCard({ post }: PostCardProps) {
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
       setLiked((prev) => !prev);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const { mutate: likeComment, isPending: isLikingComment } = useMutation({
+    mutationFn: (commentId: string) =>
+      toggleLikeComment({ authorId: user?.id, commentId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["fetchNotifications"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
+      setCommentLiked((prev) => !prev);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -113,7 +139,6 @@ function PostCard({ post }: PostCardProps) {
     mutationFn: (id: string) => deleteComment(id),
     onSuccess: () => {
       setCommented((prev) => !prev);
-      toast.success("Comment deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["fetchPosts"] });
       queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
       queryClient.invalidateQueries({ queryKey: ["fetchSinglePost"] });
@@ -123,8 +148,36 @@ function PostCard({ post }: PostCardProps) {
     },
   });
 
+  const { mutate: replyAdd, isPending: isReplying } = useMutation({
+    mutationFn: ({
+      replyContent,
+      parentId,
+    }: {
+      replyContent: string;
+      parentId: string;
+    }) => addReply({ replyContent, postId, parentId }),
+    onSuccess: () => {
+      setReplyBoxShow(false);
+      queryClient.invalidateQueries({
+        queryKey: ["fetchPosts"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["fetchNotifications"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["fetchProfileInfo"] });
+
+      setReplyContent("");
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
+
   function toggleLike() {
     mutate(post.id);
+  }
+  function toggleCommentLike(commentId: string) {
+    likeComment(commentId);
   }
 
   function toggleRepost() {
@@ -145,6 +198,14 @@ function PostCard({ post }: PostCardProps) {
 
   function handleCommentDelete(id: string) {
     deletedComment(id);
+  }
+
+  function handleReply(parentId: string) {
+    if (!replyContent) {
+      toast.error("Write a comment");
+      return;
+    }
+    replyAdd({ replyContent, parentId });
   }
 
   return (
@@ -242,6 +303,31 @@ function PostCard({ post }: PostCardProps) {
           <hr className="my-3 sm:my-4" />
           <CardFooter className="px-0 w-full">
             <div className="w-full">
+              {/* Add Comment */}
+              {user && !commented && (
+                <div className="w-full mt-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
+                    <ImageBox src={user?.image} size={36} />
+                    <Textarea
+                      placeholder="Comment your thoughts"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      className="w-full text-sm sm:text-base min-h-[60px]"
+                    />
+                  </div>
+                  <div className="flex w-full justify-end ps-10 sm:ps-14 mt-3">
+                    <Button
+                      variant="secondary"
+                      onClick={() => handleComment()}
+                      disabled={isCommenting || !content}
+                      className="flex items-center gap-2 w-full sm:w-auto"
+                    >
+                      <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>Comment</span>
+                    </Button>
+                  </div>
+                </div>
+              )}
               {/* Existing Comments */}
               <div>
                 {post.comments.map((comment) => (
@@ -279,61 +365,119 @@ function PostCard({ post }: PostCardProps) {
                       <Button
                         variant="ghost"
                         className="flex items-center gap-2 "
+                        onClick={() => toggleCommentLike(comment.id)}
+                        disabled={isLikingComment || !session}
                       >
                         <Heart
-                          fill={"transparent"}
-                          stroke={"white"}
+                          fill={commentLiked ? "red" : "transparent"}
+                          stroke={commentLiked ? "red" : "white"}
                           strokeWidth={1}
-                          className="size-3  sm:size-4"
+                          className="size-5 sm:size-6"
                         />
                         <span className="text-xs sm:text-sm">
-                          {comment.likes}
+                          {comment._count.commentLike}
                         </span>
                       </Button>
-                      <Button variant="ghost" className="text-sm ">
+                      <Button
+                        variant="ghost"
+                        className="text-sm"
+                        onClick={() => setReplyBoxShow((prev) => !prev)}
+                      >
                         Reply
                       </Button>
                     </div>
 
+                    {/* Reply to comment */}
+
                     {/* Comment Replies */}
                     <div className="pl-7 sm:pl-8 mt-1 text-sm sm:text-base font-semibold">
                       {comment.replies.length ? (
-                        <Button variant="ghost">
-                          View {comment.replies.length} replies
+                        <Button
+                          variant="link"
+                          onClick={() => {
+                            setViewReply((prev) => !prev);
+                          }}
+                        >
+                          {!viewReply
+                            ? `View ${comment.replies.length} replies`
+                            : `Hide Replies`}
                         </Button>
                       ) : (
                         ""
+                      )}
+                      {comment.replies.length
+                        ? viewReply && (
+                            <div className="pl-4 mt-3">
+                              {comment.replies.map((reply) => (
+                                <div
+                                  key={reply.id}
+                                  className="flex gap-3 items-center mt-2 border-b pb-3"
+                                >
+                                  <ImageBox
+                                    src={reply.author.image}
+                                    size={28}
+                                  />
+                                  <div>
+                                    <h3 className="text-xs text-gray-500">
+                                      {reply.author.name}
+                                    </h3>
+                                    <p className="text-sm text-gray-300">
+                                      {reply.content}
+                                    </p>
+                                    <div className="flex gap-2 items-center justify-between">
+                                      <p className="text-xs text-gray-500">
+                                        {formatDistanceToNow(
+                                          new Date(reply.createdAt)
+                                        )}{" "}
+                                        ago
+                                      </p>
+                                      {user?.id === reply.authorId && (
+                                        <Button
+                                          variant={"secondary"}
+                                          size={"sm"}
+                                          onClick={() =>
+                                            handleCommentDelete(reply.id)
+                                          }
+                                        >
+                                          <Trash stroke="red" />
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )
+                        : ""}
+                      {user && replyBoxShow && (
+                        <div className="max-w-11/12 mt-4 ml-4">
+                          <div className="flex flex-row gap-3 sm:gap-4 items-start">
+                            <ImageBox src={user?.image} size={28} />
+                            <Textarea
+                              placeholder="Reply to this comment"
+                              value={replyContent}
+                              onChange={(e) => setReplyContent(e.target.value)}
+                              className="w-full text-sm min-h-[60px]"
+                            />
+                          </div>
+                          <div className="flex w-full justify-end ps-10 sm:ps-14 mt-3">
+                            <Button
+                              variant="secondary"
+                              size={"sm"}
+                              onClick={() => handleReply(comment.id)}
+                              disabled={isReplying || !replyContent}
+                              className="flex items-center gap-2 w-full sm:w-auto"
+                            >
+                              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                              <span>Reply</span>
+                            </Button>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Add Comment */}
-              {user && !commented && (
-                <div className="w-full mt-4">
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start">
-                    <ImageBox src={user?.image} size={36} />
-                    <Textarea
-                      placeholder="Comment your thoughts"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      className="w-full text-sm sm:text-base min-h-[60px]"
-                    />
-                  </div>
-                  <div className="flex w-full justify-end ps-10 sm:ps-14 mt-3">
-                    <Button
-                      variant="secondary"
-                      onClick={() => handleComment()}
-                      disabled={isCommenting || !content}
-                      className="flex items-center gap-2 w-full sm:w-auto"
-                    >
-                      <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span>Comment</span>
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           </CardFooter>
         </>

@@ -37,6 +37,16 @@ export async function GET(req: NextRequest, context: RouteContext) {
               },
             },
           },
+          commentLike: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              commentLike: true,
+            },
+          },
         },
       },
       likes: {

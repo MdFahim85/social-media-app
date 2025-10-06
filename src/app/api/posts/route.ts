@@ -46,6 +46,16 @@ export async function GET(req: NextRequest) {
               },
             },
           },
+          commentLike: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              commentLike: true,
+            },
+          },
         },
       },
       likes: {

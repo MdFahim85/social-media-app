@@ -1,8 +1,18 @@
 import API from "@/app/api/axios";
-import { COMMENT, LIKE, POST } from "../../../types/types";
+import { COMMENT, LIKE, LIKECOMMENT, POST, REPLY } from "../../../types/types";
 
 export async function likeUnlike(like: LIKE) {
   const res = await API.post("/posts/likes", like);
+  if (res.data.status == 401 || res.data.status == 404) {
+    const error = res.data;
+    throw new Error(error.message);
+  }
+  return res;
+}
+
+export async function toggleLikeComment(likeComment: LIKECOMMENT) {
+  console.log(likeComment);
+  const res = await API.post("/posts/comments/likes", likeComment);
   if (res.data.status == 401 || res.data.status == 404) {
     const error = res.data;
     throw new Error(error.message);
@@ -94,6 +104,15 @@ export async function addComment(comment: COMMENT) {
 
 export async function deleteComment(id: string) {
   const res = await API.delete("/posts/comments", { data: { id } });
+  if (res.data.status == 401 || res.data.status == 404) {
+    const error = res.data;
+    throw new Error(error.message);
+  }
+  return res;
+}
+
+export async function addReply(reply: REPLY) {
+  const res = await API.post("/posts/comments/reply", reply);
   if (res.data.status == 401 || res.data.status == 404) {
     const error = res.data;
     throw new Error(error.message);
