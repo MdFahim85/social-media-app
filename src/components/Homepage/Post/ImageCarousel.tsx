@@ -22,8 +22,7 @@ export function ImageCarousel({ images }: { images: string[] }) {
                     alt={`Post Image ${index + 1}`}
                     fill
                     priority={index === 0}
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 600px"
+                    className="object-contain"
                   />
                 </div>
               </CardContent>

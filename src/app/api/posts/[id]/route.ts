@@ -1,6 +1,7 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { RouteContext } from "../../../../../types/types";
+import { tr } from "date-fns/locale";
 
 export async function GET(req: NextRequest, context: RouteContext) {
   const params = await context.params;
@@ -16,12 +17,34 @@ export async function GET(req: NextRequest, context: RouteContext) {
         },
       },
       comments: {
+        where: { parentId: null },
         include: {
           author: {
             select: {
               id: true,
               name: true,
               image: true,
+            },
+          },
+          replies: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          commentLike: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              commentLike: true,
             },
           },
         },

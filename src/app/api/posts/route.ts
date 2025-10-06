@@ -3,8 +3,19 @@ import { prisma } from "@/prisma";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(_request: NextRequest) {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const cursorPage = searchParams.get("cursor");
+  let cursor;
+  if (cursorPage === "0") {
+    cursor = null;
+  } else {
+    cursor = cursorPage;
+  }
+  const limit = 10;
   const posts = await prisma.post.findMany({
+    take: limit + 1,
+    ...(cursor ? { cursor: { id: cursor } } : {}),
     orderBy: { createdAt: "desc" },
     include: {
       author: {
@@ -15,12 +26,34 @@ export async function GET(_request: NextRequest) {
         },
       },
       comments: {
+        where: { parentId: null },
         include: {
           author: {
             select: {
               id: true,
               name: true,
               image: true,
+            },
+          },
+          replies: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          commentLike: {
+            select: {
+              authorId: true,
+            },
+          },
+          _count: {
+            select: {
+              commentLike: true,
             },
           },
         },
@@ -44,7 +77,14 @@ export async function GET(_request: NextRequest) {
       },
     },
   });
-  return NextResponse.json(posts);
+
+  let nextCursor = null;
+  if (posts.length > limit) {
+    const nextPost = posts.pop();
+    nextCursor = nextPost?.id;
+  }
+
+  return NextResponse.json({ posts, nextCursor });
 }
 
 export async function POST(req: NextRequest) {

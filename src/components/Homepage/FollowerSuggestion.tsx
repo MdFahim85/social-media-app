@@ -48,7 +48,7 @@ function FollowerSuggestion() {
 
   const suggestedUsers = data?.data?.suggestedUsers;
   return (
-    <div className="w-full">
+    <div className="xl:fixed min-w-3/12">
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl lg:text-2xl">
