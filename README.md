@@ -298,12 +298,3 @@ Md Fahim
     
 -   🌐 Portfolio: [MdFahim](https://mdfahim85.github.io/PortfolioMdFahim/)
     
-
-
-<div align="center">
-
-If you found this project helpful, please consider giving it a ⭐!
-
-Made with ❤️ by [Md Fahim](https://github.com/MdFahim85)
-
-</div>
