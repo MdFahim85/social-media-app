@@ -1,36 +1,322 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Socially
 
-First, run the development server:
+<div align="center">
+
+A modern, full-stack social media platform built to connect people and foster community engagement
+
+[Demo](#demo) • [Features](#features) • [Installation](#installation) • [Contributing](#contributing)
+
+</div>
+
+----------
+
+## 📋 Overview
+
+Socially is a feature-rich social media web application that enables users to create and share content, engage with others through likes, comments, and reposts, and build meaningful connections within a vibrant community. Built with modern web technologies, it delivers a seamless, responsive user experience with real-time interactions.
+
+## Demo
+Live Demo - https://social-media-app-eight.vercel.app/
+
+## ✨ Features
+
+### 🔐 Authentication & Security
+
+-   Secure Authentication powered by AuthJs (NextAuth)
+    
+-   Sign up/Sign in with email and password or Google OAuth
+    
+-   Password hashing for enhanced security
+    
+-   Persistent session management across browser reloads
+    
+
+### 👤 User Profiles
+
+-   Comprehensive profile pages with customizable information
+    
+-   Profile pictures, banners, bio, location, and birthday
+    
+-   Follower/following statistics
+    
+-   Separate tabs for user posts and liked posts
+    
+-   Easy profile editing and updates
+    
+
+### 📝 Posts & Interactions
+
+-   Create posts with text content and image uploads
+    
+-   Infinite scroll feed for seamless browsing
+    
+-   Like/unlike posts and comments
+    
+-   Repost functionality to share content
+    
+-   Rich post cards displaying author info, timestamps, and engagement metrics
+    
+
+### 💬 Comment System
+
+-   Threaded comment discussions
+    
+-   Reply to comments to create nested conversations
+    
+-   Expandable and collapsible comment threads
+    
+-   Like functionality for individual comments
+    
+-   Reply and like counters
+    
+
+### 👥 Social Networking
+
+-   Follow/unfollow other users
+    
+-   Personalized follow suggestions (up to 5 recommendations)
+    
+-   Follower and following lists
+    
+
+### 🔔 Notifications
+
+-   Notification system
+    
+-   Unread notification counter in navbar
+    
+-   Four notification types:
+    
+
+	-   Post likes
+    
+	-   New comments
+    
+	-   Reposts
+    
+	-   New followers
+    
+
+	-   Mark as read and delete options
+    
+
+## 🛠️ Technologies Used
+
+### Frontend
+
+-   Next.js - React framework for production
+    
+-   TypeScript - Type-safe development
+    
+-   React Query - Data fetching and state management
+    
+-   ShadCN UI - Modern component library
+    
+-   Tailwind CSS - Utility-first styling
+    
+
+### Backend
+
+-   Next.js API Routes - Serverless API endpoints
+    
+-   App Router - Modern Next.js routing
+    
+
+### Database & ORM
+
+-   PostgreSQL - Relational database
+    
+-   Prisma - Next-generation ORM
+    
+
+### Authentication
+
+-   AuthJs (NextAuth) - Secure authentication solution
+    
+
+### Media Management
+
+-   Cloudinary - Cloud-based media storage
+    
+
+### Deployment
+
+-   Vercel - Optimized hosting platform
+    
+
+## 📁 Project Structure
+
+social-media-app/
+├── prisma/ # Prisma schema and migrations
+
+├── public/ # Static assets
+
+├── src/
+
+│ ├── app/ # Next.js App Router pages
+
+│ ├── components/ # Reusable React components
+
+│ ├── lib/ # Utility functions and configurations
+
+│ ├── auth.ts # Authentication configuration
+
+│ ├── middleware.ts # Next.js middleware
+
+│ └── prisma.ts # Prisma client instance
+
+├── types/ # TypeScript type definitions
+
+├── .env # Environment variables (database)
+
+├── .env.local # Local environment variables (secrets)
+
+  
+
+## 🚀 Installation
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+-   [Node.js](https://nodejs.org/) (v18 or higher)
+    
+-   [PostgreSQL](https://www.postgresql.org/) (local or cloud instance)
+    
+-   [Google OAuth Credentials](https://console.cloud.google.com/)
+    
+-   [Cloudinary Account](https://cloudinary.com/)
+    
+
+### Setup Instructions
 
 ```bash
+Clone the Repository  
+  
+git clone https://github.com/MdFahim85/social-media-app.git
+
+cd social-media-app
+
+1.    
+    
+
+Install Dependencies  
+  
+npm install
+
+2.    
+    
+
+Configure Environment Variables  
+  
+Create a .env file in the root directory:  
+  
+DATABASE_URL="postgresql://user:password@localhost:5432/socially"
+
+NODE_ENV="development"
+
+NEXT_PUBLIC_API_ROUTE="http://localhost:3000/api/"
+
+Create a .env.local file for sensitive credentials:  
+  
+AUTH_SECRET="your-auth-secret-key"
+
+AUTH_GOOGLE_ID="your-google-oauth-client-id"
+
+AUTH_GOOGLE_SECRET="your-google-oauth-client-secret"
+
+CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
+
+CLOUDINARY_KEY="your-cloudinary-api-key"
+
+CLOUDINARY_SECRET="your-cloudinary-api-secret"
+
+3.  Note: Generate AUTH_SECRET using: openssl rand -base64 32  
+      
+      
+    
+
+Set Up Database  
+  
+npx prisma generate
+
+npx prisma db push
+
+4.    
+    
+
+Start the Development Server  
+  
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+5.    
+    
+6.  Open Your Browser  
+      
+    Navigate to [http://localhost:3000](http://localhost:3000/)
+    
 ```
+## 🎯 Usage
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1.  Create an Account - Sign up using email or Google OAuth
+    
+2.  Complete Your Profile - Add profile picture, bio, and personal details
+    
+3.  Create Posts - Share your thoughts with text and images
+    
+4.  Engage - Like, comment, and repost content from others
+    
+5.  Connect - Follow users and discover new content through suggestions
+    
+6.  Stay Updated - Check notifications for interactions on your content
+    
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🤝 Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are what make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
-## Learn More
+### How to Contribute
 
-To learn more about Next.js, take a look at the following resources:
+1.  Fork the repository
+``` 
+#Create your feature branch  
+git checkout -b feature/AmazingFeature
+```
+2.    
+    
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+	#Commit your changes  
+	git commit -m 'Add some AmazingFeature'
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.    
+    
+```
+#Push to the branch  
+git push origin feature/AmazingFeature
+```
+4.    
+    
+5.  Open a Pull Request
+    
 
-## Deploy on Vercel
+## 📧 Contact
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Md Fahim
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+-   📧 Email: mortuza.aziz.47@gmail.com
+    
+-   💼 GitHub: [@MdFahim85](https://github.com/MdFahim85)
+    
+-   🔗 LinkedIn: [MdFahim](https://linkedin.com/in/MdFahim85)
+    
+-   🌐 Portfolio: [MdFahim](https://mdfahim85.github.io/PortfolioMdFahim/)
+    
+
+
+<div align="center">
+
+If you found this project helpful, please consider giving it a ⭐!
+
+Made with ❤️ by [Md Fahim](https://github.com/MdFahim85)
+
+</div>
