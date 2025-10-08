@@ -5,20 +5,20 @@
 
 A modern, full-stack social media platform built to connect people and foster community engagement
 
-[Demo](#demo) • [Features](#features) • [Installation](#installation) • [Contributing](#contributing)
+[Demo](#demo) • [Features](#features) • [Tech Stack](#techstack) • [Project Structure](#project_structure) • [Installation](#installation) • [Usage](#usage) • [Contributing](#contributing) • [Contact](#contact)
 
 </div>
 
 ----------
 
-## 📋 Overview
+## Overview
 
 Socially is a feature-rich social media web application that enables users to create and share content, engage with others through likes, comments, and reposts, and build meaningful connections within a vibrant community. Built with modern web technologies, it delivers a seamless, responsive user experience with real-time interactions.
 
 ## Demo
 Live Demo - https://social-media-app-eight.vercel.app/
 
-## ✨ Features
+## Features
 
 ### 🔐 Authentication & Security
 
@@ -100,7 +100,7 @@ Live Demo - https://social-media-app-eight.vercel.app/
 	-   Mark as read and delete options
     
 
-## 🛠️ Technologies Used
+## TechStack
 
 ### Frontend
 
@@ -144,7 +144,7 @@ Live Demo - https://social-media-app-eight.vercel.app/
 -   Vercel - Optimized hosting platform
     
 
-## 📁 Project Structure
+## Project Structure
 
 social-media-app/
 ├── prisma/ # Prisma schema and migrations
@@ -173,7 +173,7 @@ social-media-app/
 
   
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -256,7 +256,7 @@ npm run dev
     Navigate to [http://localhost:3000](http://localhost:3000/)
     
 ```
-## 🎯 Usage
+## Usage
 
 1.  Create an Account - Sign up using email or Google OAuth
     
@@ -271,7 +271,7 @@ npm run dev
 6.  Stay Updated - Check notifications for interactions on your content
     
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are what make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
@@ -299,7 +299,7 @@ git push origin feature/AmazingFeature
 5.  Open a Pull Request
     
 
-## 📧 Contact
+## Contact
 
 Md Fahim
 
