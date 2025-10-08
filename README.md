@@ -18,6 +18,50 @@ Socially is a feature-rich social media web application that enables users to cr
 ## Demo
 Live Demo - https://social-media-app-eight.vercel.app/
 
+
+## TechStack
+
+### Frontend
+
+-   Next.js - React framework for production
+    
+-   TypeScript - Type-safe development
+    
+-   React Query - Data fetching and state management
+    
+-   ShadCN UI - Modern component library
+    
+-   Tailwind CSS - Utility-first styling
+    
+
+### Backend
+
+-   Next.js API Routes - Serverless API endpoints
+    
+-   App Router - Modern Next.js routing
+    
+
+### Database & ORM
+
+-   PostgreSQL - Relational database
+    
+-   Prisma - Next-generation ORM
+    
+
+### Authentication
+
+-   AuthJs (NextAuth) - Secure authentication solution
+    
+
+### Media Management
+
+-   Cloudinary - Cloud-based media storage
+    
+
+### Deployment
+
+-   Vercel - Optimized hosting platform
+
 ## Features
 
 ### 🔐 Authentication & Security
@@ -99,51 +143,7 @@ Live Demo - https://social-media-app-eight.vercel.app/
 
 	-   Mark as read and delete options
     
-
-## TechStack
-
-### Frontend
-
--   Next.js - React framework for production
     
--   TypeScript - Type-safe development
-    
--   React Query - Data fetching and state management
-    
--   ShadCN UI - Modern component library
-    
--   Tailwind CSS - Utility-first styling
-    
-
-### Backend
-
--   Next.js API Routes - Serverless API endpoints
-    
--   App Router - Modern Next.js routing
-    
-
-### Database & ORM
-
--   PostgreSQL - Relational database
-    
--   Prisma - Next-generation ORM
-    
-
-### Authentication
-
--   AuthJs (NextAuth) - Secure authentication solution
-    
-
-### Media Management
-
--   Cloudinary - Cloud-based media storage
-    
-
-### Deployment
-
--   Vercel - Optimized hosting platform
-    
-
 ## Folder-Structure
 
 social-media-app/
