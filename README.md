@@ -191,25 +191,23 @@ Before you begin, ensure you have the following installed:
 ### Setup Instructions
 
 ```bash
-Clone the Repository  
+#Clone the Repository  
   
 git clone https://github.com/MdFahim85/social-media-app.git
 
-cd social-media-app
+#Go inside the directory
 
-1.    
+cd social-media-app    
     
 
-Install Dependencies  
+#Install Dependencies  
   
-npm install
-
-2.    
+npm install    
     
 
-Configure Environment Variables  
+#Configure Environment Variables
   
-Create a .env file in the root directory:  
+#Create a .env file in the root directory:  
   
 DATABASE_URL="postgresql://user:password@localhost:5432/socially"
 
@@ -231,31 +229,22 @@ CLOUDINARY_KEY="your-cloudinary-api-key"
 
 CLOUDINARY_SECRET="your-cloudinary-api-secret"
 
-3.  Note: Generate AUTH_SECRET using: openssl rand -base64 32  
-      
-      
-    
-
-Set Up Database  
+            
+#Set Up Database  
   
 npx prisma generate
 
 npx prisma db push
 
-4.    
-    
 
-Start the Development Server  
+#Start the Development Server  
   
 npm run dev
-
-5.    
-    
-6.  Open Your Browser  
-      
-    Navigate to [http://localhost:3000](http://localhost:3000/)
-    
 ```
+Open Your Browser  
+Navigate to [http://localhost:3000](http://localhost:3000/)
+    
+
 ## Usage
 
 1.  Create an Account - Sign up using email or Google OAuth
@@ -294,9 +283,7 @@ git checkout -b feature/AmazingFeature
 #Push to the branch  
 git push origin feature/AmazingFeature
 ```
-4.    
-    
-5.  Open a Pull Request
+4. Open a Pull Request
     
 
 ## Contact
