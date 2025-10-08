@@ -41,7 +41,7 @@ function SignUpComp() {
 
   const [formData, setFormData] = useState(new FormData());
 
-  const { mutate, isPending, data } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (formData: FormData) => registerUser(formData),
     onSuccess: () => {
       toast.success("Registration complete");

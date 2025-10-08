@@ -1,7 +1,6 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, MessageCircle, UserRoundPlus } from "lucide-react";
 
 export default function NotificationSkeleton() {
   return (

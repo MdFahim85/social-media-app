@@ -1,7 +1,6 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { RouteContext } from "../../../../../types/types";
-import { tr } from "date-fns/locale";
 
 export async function GET(req: NextRequest, context: RouteContext) {
   const params = await context.params;

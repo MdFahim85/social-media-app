@@ -54,7 +54,7 @@ function UpdateCard() {
     retry: false,
   });
 
-  const { mutate, isPending, data } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (formData: FormData) => updateProfile(id as string, formData),
     onSuccess: () => {
       queryClient.invalidateQueries({
