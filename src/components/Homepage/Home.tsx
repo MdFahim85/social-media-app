@@ -16,7 +16,6 @@ function Home() {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
     status,
     isError,
@@ -24,7 +23,7 @@ function Home() {
     queryKey: ["fetchPosts"],
     queryFn: getPosts,
     initialPageParam: 0,
-    getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);

@@ -40,7 +40,7 @@ export const getPosts = async ({ pageParam }: { pageParam: number | null }) => {
     const res = await API.get("/posts?cursor=" + pageParam);
     return res.data;
   } catch (error) {
-    console.log("error fetching posts");
+    console.log("error fetching posts", error);
   }
 };
 
@@ -125,7 +125,7 @@ export async function getNotifications() {
     const res = await API.get("/notifications");
     return res;
   } catch (error) {
-    console.log("error fetching notifications");
+    console.log("error fetching notifications", error);
   }
 }
 
@@ -134,7 +134,7 @@ export async function readNotification(userId: string) {
     const res = await API.post("/notifications", { data: { userId } });
     return res;
   } catch (error) {
-    console.log("Something went wrong");
+    console.log("Something went wrong", error);
   }
 }
 

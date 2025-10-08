@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Image } from "lucide-react";
+import { X, Image as Img } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface ImageUploaderProps {
   formData: FormData;
@@ -98,7 +99,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           onClick={triggerFileInput}
           className="w-full sm:w-auto"
         >
-          <Image /> Upload
+          <Img /> Upload
         </Button>
 
         {/* File Previews */}
@@ -113,7 +114,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   key={preview.id}
                   className="relative group border rounded-lg overflow-hidden"
                 >
-                  <img
+                  <Image
                     src={preview.url}
                     alt={`Preview ${index + 1}`}
                     className="w-full h-24 object-cover"

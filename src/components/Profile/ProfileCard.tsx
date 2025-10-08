@@ -97,7 +97,7 @@ function ProfileCard() {
     return <ErrorCard errorMessage={followError.message} />;
   }
 
-  const { likedPosts, posts, user, reposts } = userData;
+  const { likedPosts, posts, user } = userData;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">

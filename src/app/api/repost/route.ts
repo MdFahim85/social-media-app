@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const repost = await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx) => {
     const newRepost = await tx.repost.create({
       data: {
         postId,

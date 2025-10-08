@@ -38,7 +38,7 @@ function PostCard({ post }: PostCardProps) {
 
   const [commentLiked, setCommentLiked] = useState(
     post.comments.some((comment) =>
-      comment.commentLike.some((comLike) => comLike.authorId === user?.id)
+      comment.commentLike?.some((comLike) => comLike.authorId === user?.id)
     )
   );
 
@@ -331,7 +331,7 @@ function PostCard({ post }: PostCardProps) {
               {/* Existing Comments */}
               <div>
                 {post.comments.map((comment) => (
-                  <div className="mb-6 sm:mb-8" key={comment.id}>
+                  <div className="mt-6 mb-6 sm:mb-8" key={comment.id}>
                     <div className="flex gap-3 sm:gap-4 items-center">
                       <ImageBox src={comment.author.image} size={32} />
                       <div className="flex-1 flex gap-4 justify-between ">
@@ -382,6 +382,7 @@ function PostCard({ post }: PostCardProps) {
                         variant="ghost"
                         className="text-sm"
                         onClick={() => setReplyBoxShow((prev) => !prev)}
+                        disabled={!user}
                       >
                         Reply
                       </Button>
@@ -438,6 +439,7 @@ function PostCard({ post }: PostCardProps) {
                                           onClick={() =>
                                             handleCommentDelete(reply.id)
                                           }
+                                          disabled={isDeletingComment}
                                         >
                                           <Trash stroke="red" />
                                         </Button>

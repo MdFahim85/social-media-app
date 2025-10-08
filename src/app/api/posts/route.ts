@@ -147,12 +147,13 @@ export async function DELETE(req: NextRequest) {
         const fileWithExt = parts.pop() as string;
         const folder = parts.slice(parts.indexOf("upload") + 2).join("/");
         const publicId = `${folder}/${fileWithExt.split(".")[0]}`;
-        const res = await cloudinary.uploader.destroy(publicId);
+        await cloudinary.uploader.destroy(publicId);
       }
     } catch (error) {
       return NextResponse.json({
         message: "Error deleting images",
         status: 500,
+        error,
       });
     }
   }

@@ -1,5 +1,4 @@
 import API from "@/app/api/axios";
-import { auth } from "@/auth";
 
 export async function getProfileInfo(id: string) {
   const res = await API.get(`/profile/${id}`);

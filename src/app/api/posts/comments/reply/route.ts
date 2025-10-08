@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Missing comment reply", status: 400 });
   }
 
-  const reply = await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx) => {
     const newReply = await tx.comment.create({
       data: {
         postId: postId as string,

@@ -240,6 +240,7 @@ export async function GET(req: NextRequest, context: RouteContext) {
       {
         message: "Internal server error",
         status: 500,
+        error,
       },
       { status: 500 }
     );
