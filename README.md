@@ -215,7 +215,7 @@ NODE_ENV="development"
 
 NEXT_PUBLIC_API_ROUTE="http://localhost:3000/api/"
 
-Create a .env.local file for sensitive credentials:  
+#Create a .env.local file for sensitive credentials:  
   
 AUTH_SECRET="your-auth-secret-key"
 
