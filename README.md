@@ -5,7 +5,7 @@
 
 A modern, full-stack social media platform built to connect people and foster community engagement
 
-[Demo](#demo) • [Features](#features) • [Tech Stack](#techstack) • [Structure](#structure) • [Installation](#installation) • [Usage](#usage) • [Contributing](#contributing) • [Contact](#contact)
+[Demo](#demo) • [Features](#features) • [Tech Stack](#techstack) • [Folder Structure](#folder) • [Installation](#installation) • [Usage](#usage) • [Contributing](#contributing) • [Contact](#contact)
 
 </div>
 
@@ -144,7 +144,7 @@ Live Demo - https://social-media-app-eight.vercel.app/
 -   Vercel - Optimized hosting platform
     
 
-## Structure
+## Folder Structure
 
 social-media-app/
 ├── prisma/ # Prisma schema and migrations
